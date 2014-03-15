@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="3.2" method="upgrade" >
+    <name>Flexforms</name>
+    <author>David Jardin</author>
+    <creationDate>%%CURRENTDATE%%</creationDate>
+    <copyright>(C) David Jardin - djumla. All rights reserved.</copyright>
+    <license>GNU General Public License version 3 or later; see LICENSE.txt</license>
+    <authorEmail>info@djumla.de</authorEmail>
+    <authorUrl>www.djumla.de</authorUrl>
+    <version>1.0.0</version>
+    <description>Flexforms form component</description>
+
+    <install> <!-- Runs on install -->
+        <sql>
+            <file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+        </sql>
+    </install>
+    <uninstall> <!-- Runs on uninstall -->
+        <sql>
+            <file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+        </sql>
+    </uninstall>
+    <!-- SQL-Skripte für die Aktualisierung der Erweiterung -->
+    <update>
+        <schemas>
+            <schemapath type="mysql">sql/updates/mysql</schemapath>
+        </schemas>
+    </update>
+
+    <files folder="site">
+        <filename>flexforms.php</filename>
+        <filename>index.html</filename>
+    </files>
+    <languages folder="site">
+        <language tag="de-DE">language/de-DE.com_flexforms.ini</language>
+    </languages>
+
+    <media destination="com_flexforms" folder="media">
+        <folder>css</folder>
+    </media>
+
+    <administration>
+        <menu>COM_FLEXFORMS_MENU</menu>
+        <files folder="admin">
+            <filename>flexforms.php</filename>
+            <filename>fof.xml</filename>
+            <filename>config.xml</filename>
+            <filename>access.xml</filename>
+            <filename>index.html</filename>
+        </files>
+        <languages folder="admin">
+            <language tag="de-DE">language/de-DE.com_flexforms.ini</language>
+            <language tag="de-DE">language/de-DE.com_flexforms.sys.ini</language>
+        </languages>
+    </administration>
+</extension>
+

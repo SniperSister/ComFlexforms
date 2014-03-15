@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <fieldset>
+        <field name="name" type="text" required="true" size="50" label="Name" />
+        <field name="email" type="email" required="true" size="50" label="E-Mail" />
+        <field name="message" type="textarea" required="true" cols="50" rows="5" />
+    </fieldset>
+</form>

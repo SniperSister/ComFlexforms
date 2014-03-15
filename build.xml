@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Flexforms" default="dist">
+    <!-- ============================================  -->
+    <!-- Target: prepare                               -->
+    <!-- ============================================  -->
+    <target name="prepare">
+        <echo msg="Making directory ./build" />
+        <mkdir dir="./build" />
+
+        <echo msg="Making current timestamp" />
+        <tstamp>
+            <format property="zipstamp" pattern="%d%m%y%H%M%S" locale="de-DE" />
+        </tstamp>
+
+        <tstamp>
+            <format property="xmlstamp" pattern="%d.%m.%y" locale="de-DE" />
+        </tstamp>
+
+        <echo msg="fetching current versions" />
+        <xmlproperty file="./src/administrator/components/com_flexforms/flexforms.xml" prefix="com"/>
+    </target>
+
+    <!-- ============================================  -->
+    <!-- Target: build                                 -->
+    <!-- ============================================  -->
+    <target name="build" depends="prepare">
+        <echo msg="Deleting files from build directory" />
+        <delete dir="./build/com" />
+
+        <echo msg="Copying files to build directory..." />
+
+        <echo msg="Copying admin folder" />
+        <copy todir="./build/com/admin">
+            <fileset dir="./src/administrator/components/com_flexforms">
+                <exclude name="flexforms.xml"/>
+            </fileset>
+            <filterchain>
+                <replacetokens begintoken="%%" endtoken="%%">
+                    <token key="COMPONENTVERSION" value="${com.extension.version}" />
+                </replacetokens>
+            </filterchain>
+        </copy>
+
+        <echo msg="Copying site folder" />
+        <copy todir="./build/com/site">
+            <fileset dir="./src/components/com_flexforms">
+            </fileset>
+            <filterchain>
+                <replacetokens begintoken="%%" endtoken="%%">
+                    <token key="COMPONENTVERSION" value="${com.extension.version}" />
+                </replacetokens>
+            </filterchain>
+        </copy>
+
+        <echo msg="Copying media folder" />
+        <copy todir="./build/com/media">
+            <fileset dir="./src/media/com_flexforms">
+            </fileset>
+            <filterchain>
+                <replacetokens begintoken="%%" endtoken="%%">
+                    <token key="COMPONENTVERSION" value="${com.extension.version}" />
+                </replacetokens>
+            </filterchain>
+        </copy>
+
+        <echo msg="Copying admin language folder" />
+        <copy todir="./build/com/admin/language">
+            <fileset dir="./src/administrator/language/de-DE">
+            </fileset>
+            <filterchain>
+                <replacetokens begintoken="%%" endtoken="%%">
+                    <token key="COMPONENTVERSION" value="${com.extension.version}" />
+                </replacetokens>
+            </filterchain>
+        </copy>
+
+        <echo msg="Copying site language folder" />
+        <copy todir="./build/com/site/language">
+            <fileset dir="./src/language/de-DE">
+            </fileset>
+            <filterchain>
+                <replacetokens begintoken="%%" endtoken="%%">
+                    <token key="COMPONENTVERSION" value="${com.extension.version}" />
+                </replacetokens>
+            </filterchain>
+        </copy>
+
+        <echo msg="Copying manifest" />
+        <copy tofile="./build/com/flexforms.xml" file="./src/administrator/components/com_flexforms/flexforms.xml">
+            <filterchain>
+                <replacetokens begintoken="%%" endtoken="%%">
+                    <token key="CURRENTDATE" value="${xmlstamp}" />
+                </replacetokens>
+            </filterchain>
+        </copy>
+    </target>
+
+    <!-- ============================================  -->
+    <!-- (DEFAULT)  Target: dist                       -->
+    <!-- ============================================  -->
+    <target name="dist" depends="build">
+        <echo msg="Creating component archive..." />
+
+        <zip destfile="./build/com_flexforms_${com.extension.version}_${zipstamp}.zip">
+            <fileset dir="./build/com">
+                <include name="*" />
+                <include name="**/*" />
+            </fileset>
+        </zip>
+
+        <echo msg="Files copied and compressed in build directory OK!" />
+    </target>
+</project>
