@@ -17,7 +17,7 @@ if (!version_compare(phpversion(), '5.3.0', '>='))
 }
 
 // Load F0F
-include_once JPATH_LIBRARIES . '/fof/include.php';
+include_once JPATH_LIBRARIES . '/f0f/include.php';
 
 if (!defined('F0F_INCLUDED') || !class_exists('F0FForm', true))
 {
