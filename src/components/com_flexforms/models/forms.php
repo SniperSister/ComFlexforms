@@ -12,7 +12,7 @@
  *
  * @since  1.0.0
  */
-class FlexformsModelForms extends FOFModel
+class FlexformsModelForms extends F0FModel
 {
     /**
      * fetch a form

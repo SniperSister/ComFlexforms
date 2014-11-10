@@ -16,12 +16,12 @@ if (!version_compare(phpversion(), '5.3.0', '>='))
     throw new Exception("Your PHP Version is outdated");
 }
 
-// Load FOF
-include_once JPATH_LIBRARIES . '/fof/include.php';
+// Load F0F
+include_once JPATH_LIBRARIES . '/f0f/include.php';
 
-if (!defined('FOF_INCLUDED') || !class_exists('FOFForm', true))
+if (!defined('F0F_INCLUDED') || !class_exists('F0FForm', true))
 {
-    throw new Exception("FOF not found");
+    throw new Exception("F0F not found");
 }
 
-FOFDispatcher::getTmpInstance('com_flexforms')->dispatch();
+F0FDispatcher::getTmpInstance('com_flexforms')->dispatch();

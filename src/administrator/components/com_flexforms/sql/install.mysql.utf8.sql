@@ -1,4 +1,4 @@
-CREATE TABLE `#__flexforms_forms` (
+CREATE TABLE IF NOT EXISTS `#__flexforms_forms` (
   `flexforms_form_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `enabled` tinyint(1) unsigned NOT NULL,
   `title` varchar(255) NOT NULL DEFAULT '',

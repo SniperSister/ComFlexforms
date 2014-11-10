@@ -14,7 +14,7 @@ defined('_JEXEC') or die();
  *
  * @since  1.0.0
  */
-class FlexformsControllerForm extends FOFController
+class FlexformsControllerForm extends F0FController
 {
     public function submit()
     {

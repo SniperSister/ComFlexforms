@@ -15,7 +15,7 @@ defined('_JEXEC') or die();
  *
  * @since  1.0.0
  */
-class FlexformsToolbar extends FOFToolbar
+class FlexformsToolbar extends F0FToolbar
 {
 
 }

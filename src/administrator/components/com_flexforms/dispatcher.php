@@ -14,7 +14,7 @@ defined('_JEXEC') or die();
  *
  * @since  1.0.0
  */
-class FlexformsDispatcher extends FOFDispatcher
+class FlexformsDispatcher extends F0FDispatcher
 {
     public $defaultView = 'forms';
 }

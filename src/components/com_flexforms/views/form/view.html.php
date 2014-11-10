@@ -12,7 +12,7 @@
  *
  * @since  1.0.0
  */
-class FlexformsViewForm extends FOFViewHtml
+class FlexformsViewForm extends F0FViewHtml
 {
     /**
      * display a form
