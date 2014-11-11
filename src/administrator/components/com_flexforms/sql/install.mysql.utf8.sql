@@ -20,4 +20,4 @@ CREATE TABLE IF NOT EXISTS `#__flexforms_forms` (
   `locked_on` datetime DEFAULT NULL,
   `locked_by` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`flexforms_form_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

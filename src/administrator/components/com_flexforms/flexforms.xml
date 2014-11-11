@@ -37,6 +37,7 @@
     </files>
     <languages folder="site">
         <language tag="de-DE">language/de-DE.com_flexforms.ini</language>
+        <language tag="en-GB">language/en-GB.com_flexforms.ini</language>
     </languages>
 
     <media destination="com_flexforms" folder="media">
@@ -52,12 +53,15 @@
             <filename>config.xml</filename>
             <filename>access.xml</filename>
             <filename>index.html</filename>
+            <folder>sql</folder>
             <folder>views</folder>
             <folder>helpers</folder>
         </files>
         <languages folder="admin">
             <language tag="de-DE">language/de-DE.com_flexforms.ini</language>
             <language tag="de-DE">language/de-DE.com_flexforms.sys.ini</language>
+            <language tag="en-GB">language/en-GB.com_flexforms.ini</language>
+            <language tag="en-GB">language/en-GB.com_flexforms.ini</language>
         </languages>
     </administration>
 </extension>

@@ -68,6 +68,8 @@
         <copy todir="./build/com/admin/language">
             <fileset dir="./src/administrator/language/de-DE">
             </fileset>
+            <fileset dir="./src/administrator/language/en-GB">
+            </fileset>
             <filterchain>
                 <replacetokens begintoken="%%" endtoken="%%">
                     <token key="COMPONENTVERSION" value="${com.extension.version}" />
@@ -78,6 +80,8 @@
         <echo msg="Copying site language folder" />
         <copy todir="./build/com/site/language">
             <fileset dir="./src/language/de-DE">
+            </fileset>
+            <fileset dir="./src/language/en-GB">
             </fileset>
             <filterchain>
                 <replacetokens begintoken="%%" endtoken="%%">
