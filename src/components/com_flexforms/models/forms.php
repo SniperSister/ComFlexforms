@@ -203,9 +203,16 @@ class FlexformsModelForms extends F0FModel
             }
 
             // Replace placeholder
-            $text = str_ireplace("{" . $fieldName . "}", $fieldValue, $text);
+            if (is_array($fieldValue))
+            {
+                $text = str_ireplace("{" . $fieldName . "}", implode(", ", $fieldValue), $text);
+            }
+            else
+            {
+                $text = str_ireplace("{" . $fieldName . "}", $fieldValue, $text);
+            }
         }
-
+        
         return $text;
     }
 }
