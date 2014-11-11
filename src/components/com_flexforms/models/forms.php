@@ -62,6 +62,15 @@ class FlexformsModelForms extends F0FModel
         return $form->validate($data);
     }
 
+    /**
+     * submits a form
+     *
+     * @param   array  $data  user data
+     *
+     * @return bool
+     *
+     * @throws Exception
+     */
     public function submit($data)
     {
         $item = $this->getItem();
@@ -73,63 +82,130 @@ class FlexformsModelForms extends F0FModel
 
         $form = $this->getFormDefinition();
 
+        // Load flexform plugins
         JPluginHelper::importPlugin('flexforms');
+        JEventDispatcher::getInstance()->trigger('onBeforeFlexformsSubmit', array(&$item, &$form, &$data));
 
-        JEventDispatcher::getInstance()->trigger('onBeforeFlexformsSubmit', array($item, $form, $data));
-
+        // Prepare owner mail
         if ($item->send_owner_mail == 1)
         {
             $ownerMail = JFactory::getMailer();
 
+            // Check that the subject exists
             if ($item->owner_subject == "")
             {
                 throw new Exception("Missing owner mail subject");
             }
 
+            // Check that the owner exists
             if ($item->owner_mail == "")
             {
                 throw new Exception("Missing owner mail text");
             }
 
+            // Split owner array by comma
             $owners = explode(",", $item->owners);
 
+            // Check and append recipients
             foreach ($owners as $owner)
             {
-                if ($owner == "")
+                if (!JMailHelper::isEmailAddress($owner))
                 {
                     throw new Exception("Invalid owner addresses");
                 }
             }
 
+            // Parse text
             $ownerText = $this->parseMailText($item->owner_mail, $data, $form);
 
+            // Apply mail attributes
             $ownerMail->addRecipient($owners);
             $ownerMail->setSubject($item->owner_subject);
             $ownerMail->setBody($ownerText);
-
-            $ownerMail->Send();
+            $ownerMail->isHtml(false);
         }
 
+        // Prepare sender email
         if ($item->send_sender_mail == 1)
         {
             $senderMail = JFactory::getMailer();
+
+            // Check mail subject
+            if ($item->sender_subject == "")
+            {
+                throw new Exception("Missing owner mail subject");
+            }
+
+            // Check mail text
+            if ($item->sender_mail == "")
+            {
+                throw new Exception("Missing owner mail text");
+            }
+
+            // Check if the sender field name is correct
+            if (!$form->getField($item->sender_field))
+            {
+                throw new Exception("Invalid sender field name");
+            }
+
+            // Check and append recipients
+            if (!JMailHelper::isEmailAddress($data[$item->sender_field]))
+            {
+                throw new Exception("Invalid sender addresses");
+            }
+
+            // Parse text
+            $senderText = $this->parseMailText($item->sender_mail, $data, $form);
+
+            // Apply mail attributes
+            $senderMail->addRecipient($data[$item->sender_field]);
+            $senderMail->setSubject($item->sender_subject);
+            $senderMail->setBody($senderText);
+            $senderMail->isHtml(false);
         }
 
-        JEventDispatcher::getInstance()->trigger('onBeforeFlexformsSubmit', array($item, $form, $data));
+        // Everything seems to be fine, send mails
+        if (!empty($ownerMail))
+        {
+            $ownerMail->Send();
+        }
+
+        if (!empty($senderMail))
+        {
+            $senderMail->Send();
+        }
+
+        // Trigger "after submit" event
+        JEventDispatcher::getInstance()->trigger('onAfterFlexformsSubmit', array(&$item, &$form, &$data));
 
         return true;
     }
 
+    /**
+     * replaced placeholders in mail templates
+     *
+     * @param   string  $text  mail text
+     * @param   array   $data  user data
+     * @param   JForm   $form  current form object
+     *
+     * @return  string  parsed text
+     */
     protected function parseMailText($text, $data, $form)
     {
         foreach ($data as $fieldName => $fieldValue)
         {
-            if (strpos($text, "{" . $fieldName . "}"))
+            $field = $form->getField($fieldName);
+
+            // Placeholder present and field valid?
+            if (!strpos($text, "{" . $fieldName . "}") || !$field)
             {
-                
+                continue;
             }
 
-            $field = $form->getField($fieldName);
+            // Replace placeholder
+            $text = str_ireplace("{" . $fieldName . "}", $fieldValue, $text);
         }
+
+        return $text;
     }
 }

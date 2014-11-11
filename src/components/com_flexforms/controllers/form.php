@@ -16,11 +16,19 @@ defined('_JEXEC') or die();
  */
 class FlexformsControllerForm extends F0FController
 {
+    /**
+     * submit form
+     *
+     * @return void
+     *
+     * @throws Exception
+     */
     public function submit()
     {
         $input = JFactory::getApplication()->input;
         $model = $this->getThisModel();
 
+        // Validate user input before starting the send process
         if (!$model->validateUserForm($input->post->getArray()))
         {
             $this->setRedirect(
@@ -32,8 +40,28 @@ class FlexformsControllerForm extends F0FController
             return;
         }
 
-        $model->submit($input->post->getArray());
+        // Try to submit the form
+        try
+        {
+            $model->submit($input->post->getArray());
+        }
+        // An error occurred
+        catch (Exception $e)
+        {
+            $this->setRedirect(
+                JRoute::_('index.php?option=com_flexforms&view=form&id=' . (int) $input->post->get('id'), false),
+                JText::_('COM_FLEXFORMS_FORM_SUBMIT_MSG_SEND_ERROR'),
+                'error'
+            );
 
-        die();
+            return;
+        }
+
+        // Everything went fine, return
+        $this->setRedirect(
+            JRoute::_('index.php?option=com_flexforms&view=form&id=' . (int) $input->post->get('id'), false),
+            JText::_('COM_FLEXFORMS_FORM_SUBMIT_MSG_SENT'),
+            'msg'
+        );
     }
 }
