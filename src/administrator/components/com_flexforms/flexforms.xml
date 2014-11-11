@@ -61,7 +61,7 @@
             <language tag="de-DE">language/de-DE.com_flexforms.ini</language>
             <language tag="de-DE">language/de-DE.com_flexforms.sys.ini</language>
             <language tag="en-GB">language/en-GB.com_flexforms.ini</language>
-            <language tag="en-GB">language/en-GB.com_flexforms.ini</language>
+            <language tag="en-GB">language/en-GB.com_flexforms.sys.ini</language>
         </languages>
     </administration>
 </extension>
