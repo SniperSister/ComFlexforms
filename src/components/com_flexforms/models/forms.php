@@ -59,7 +59,11 @@ class FlexformsModelForms extends F0FModel
 
         $form = $this->getFormDefinition();
 
-        return $form->validate($data);
+        $result = $form->validate($data);
+
+        JEventDispatcher::getInstance()->trigger('onBeforeFlexformsValidate', array(&$item, &$form, &$data, &$result));
+
+        return $result;
     }
 
     /**
@@ -167,11 +171,13 @@ class FlexformsModelForms extends F0FModel
         // Everything seems to be fine, send mails
         if (!empty($ownerMail))
         {
+            JEventDispatcher::getInstance()->trigger('onBeforeFlexformsSendOwnerMail', array(&$item, &$form, &$data, &$ownerMail));
             $ownerMail->Send();
         }
 
         if (!empty($senderMail))
         {
+            JEventDispatcher::getInstance()->trigger('onBeforeFlexformsSendSenderMail', array(&$item, &$form, &$data, &$senderMail));
             $senderMail->Send();
         }
 
@@ -212,7 +218,7 @@ class FlexformsModelForms extends F0FModel
                 $text = str_ireplace("{" . $fieldName . "}", $fieldValue, $text);
             }
         }
-        
+
         return $text;
     }
 }
