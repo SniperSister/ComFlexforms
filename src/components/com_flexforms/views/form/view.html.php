@@ -31,6 +31,8 @@ class FlexformsViewForm extends F0FViewHtml
         $this->assign('item', $model->getItem());
         $this->assign('form', $model->getFormDefinition($this->item->flexforms_form_id));
 
+        $this->loadFormLanguageFiles($this->item->form);
+
         JHtml::_('behavior.formvalidation');
 
         $layoutName = $this->item->layout;
@@ -82,6 +84,28 @@ class FlexformsViewForm extends F0FViewHtml
 
         return true;
     }
+
+    /**
+     * Load form specific language files
+     * filename must be com_flexforms.{formname}.ini and be save in system language folder
+     * or in media/com_flexforms/language/{LANG}/
+     *
+     * @param   string  $form  The name of the form
+     *
+     * @return  void
+     */
+    protected function loadFormLanguageFiles ($form)
+    {
+        $jlang = JFactory::getLanguage();
+        $jlang->load('com_flexforms.' . $form, JPATH_SITE, 'en-GB', true);
+        $jlang->load('com_flexforms.' . $form, JPATH_SITE, $jlang->getDefault(), true);
+        $jlang->load('com_flexforms.' . $form, JPATH_SITE, null, true);
+
+        $jlang->load('com_flexforms.' . $form, JPATH_SITE . '/media/com_flexforms', 'en-GB', true);
+        $jlang->load('com_flexforms.' . $form, JPATH_SITE . '/media/com_flexforms', $jlang->getDefault(), true);
+        $jlang->load('com_flexforms.' . $form, JPATH_SITE . '/media/com_flexforms', null, true);
+    }
+
 
     /**
      * Displays the view
