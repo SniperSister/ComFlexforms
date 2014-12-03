@@ -39,7 +39,6 @@ class FlexformsViewForm extends F0FViewHtml
 
         unset($model);
         unset($tpl);
-        unset($layoutName);
 
         // Start capturing output into a buffer
         ob_start();
