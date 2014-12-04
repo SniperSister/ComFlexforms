@@ -39,7 +39,8 @@ class FlexformsHelperFileselect
         $db->setQuery($query);
         $templates = $db->loadObjectList('element');
 
-        $options["com.default"] = JText::_('COM_FLEXFORMS_FORMS_FIELD_LAYOUT_OPTION_COMPONENT');
+        $options["com.default"]   = JText::_('COM_FLEXFORMS_FORMS_FIELD_LAYOUT_OPTION_COMPONENT');
+        $options["media.default"] = JText::_('COM_FLEXFORMS_FORMS_FIELD_LAYOUT_OPTION_MEDIA');
 
         // Loop on all templates
         if ($templates)
