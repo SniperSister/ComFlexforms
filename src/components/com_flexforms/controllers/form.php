@@ -25,6 +25,8 @@ class FlexformsControllerForm extends F0FController
      */
     public function submit()
     {
+        $this->_csrfProtection();
+
         $input = JFactory::getApplication()->input;
         $model = $this->getThisModel();
 

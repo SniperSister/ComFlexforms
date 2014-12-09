@@ -31,42 +31,14 @@ class FlexformsViewForm extends F0FViewHtml
         $this->assign('item', $model->getItem());
         $this->assign('form', $model->getFormDefinition($this->item->flexforms_form_id));
 
+        $this->loadFormLanguageFiles($this->item->form);
+
         JHtml::_('behavior.formvalidation');
 
-        $layoutName = $this->item->layout;
+        $this->_tempFilePath = $this->getLayoutFile($this->item->layout, $this->item->form);
 
-        $layoutParts = explode(".", $layoutName);
-
-        if ($layoutParts[0] == "com")
-        {
-            $path = JPATH_SITE . "/components/com_flexforms/views/form/tmpl/" . $layoutParts[1] . ".php";
-
-            if (!JFile::exists($path))
-            {
-                throw new Exception("Invalid layout");
-            }
-        }
-        elseif ($layoutParts[0] == "tpl")
-        {
-            $path = JPATH_SITE . "/templates/" . $layoutParts[1] . "/html/com_flexforms/form/" . $layoutParts[2] . ".php";
-
-            if (!JFile::exists($path))
-            {
-                throw new Exception("Invalid layout");
-            }
-        }
-        else
-        {
-            throw new Exception("Invalid layout");
-        }
-
-        $this->_tempFilePath = $path;
-
-        unset($layoutParts);
-        unset($path);
         unset($model);
         unset($tpl);
-        unset($layoutName);
 
         // Start capturing output into a buffer
         ob_start();
@@ -82,6 +54,78 @@ class FlexformsViewForm extends F0FViewHtml
 
         return true;
     }
+
+    /**
+     * check different options for layout overwrites
+     *
+     * @param   string  $layoutName
+     * @param   string  $formName
+     *
+     * @return  string
+     *
+     * @throws Exception
+     */
+    protected function getLayoutFile($layoutName, $formName)
+    {
+        $layoutParts = explode(".", $layoutName);
+
+        if ($layoutParts[0] == "com")
+        {
+            $path = JPATH_SITE . "/components/com_flexforms/views/form/tmpl/" . $layoutParts[1] . ".php";
+
+            if (!JFile::exists($path))
+            {
+                throw new Exception("Invalid layout");
+            }
+            return $path;
+        }
+
+        if ($layoutParts[0] == "tpl")
+        {
+            $path = JPATH_SITE . "/templates/" . $layoutParts[1] . "/html/com_flexforms/form/" . $layoutParts[2] . ".php";
+
+            if (!JFile::exists($path))
+            {
+                throw new Exception("Invalid layout");
+            }
+            return $path;
+        }
+
+        if ($layoutParts[0] == "media")
+        {
+            $path = JPATH_SITE . "/media/com_flexforms/forms/" . $formName . ".php";
+
+            if (!JFile::exists($path))
+            {
+                throw new Exception("Invalid layout");
+            }
+            return $path;
+        }
+
+        throw new Exception("Invalid layout");
+    }
+
+    /**
+     * Load form specific language files
+     * filename must be com_flexforms.{formname}.ini and be save in system language folder
+     * or in media/com_flexforms/language/{LANG}/
+     *
+     * @param   string  $form  The name of the form
+     *
+     * @return  void
+     */
+    protected function loadFormLanguageFiles ($form)
+    {
+        $jlang = JFactory::getLanguage();
+        $jlang->load('com_flexforms.' . $form, JPATH_SITE, 'en-GB', true);
+        $jlang->load('com_flexforms.' . $form, JPATH_SITE, $jlang->getDefault(), true);
+        $jlang->load('com_flexforms.' . $form, JPATH_SITE, null, true);
+
+        $jlang->load('com_flexforms.' . $form, JPATH_SITE . '/media/com_flexforms', 'en-GB', true);
+        $jlang->load('com_flexforms.' . $form, JPATH_SITE . '/media/com_flexforms', $jlang->getDefault(), true);
+        $jlang->load('com_flexforms.' . $form, JPATH_SITE . '/media/com_flexforms', null, true);
+    }
+
 
     /**
      * Displays the view

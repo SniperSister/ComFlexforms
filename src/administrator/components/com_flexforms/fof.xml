@@ -5,4 +5,16 @@
             <tablealias>f</tablealias>
         </table>
     </common>
+    <frontend>
+        <view name="form">
+            <acl>
+                <task name="*">false</task>
+                <task name="read"></task>
+                <task name="submit"></task>
+            </acl>
+            <option>
+                <csrf_protection>1</csrf_protection>
+            </option>
+        </view>
+    </frontend>
 </fof>
