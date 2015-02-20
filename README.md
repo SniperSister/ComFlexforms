@@ -87,3 +87,8 @@ FlexForms triggers a ton of plugin events during execution. To make use of these
  * onBeforeFlexformsSendSenderMail
  * onAfterFlexformsSubmit
  
+## FAQ
+
+ * **Does FlexForms store submitted forms in the database?** No, but you can write a plugin for this!
+ * **Does FlexForms support multipage-forms** No, but you can create a layout override for this!
+ * **Does FlexForms support captchas** Nope, but you can write a plugin for this!
