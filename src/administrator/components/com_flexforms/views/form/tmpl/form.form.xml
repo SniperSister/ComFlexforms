@@ -58,6 +58,13 @@
                rows="15"
                cols="60"
                />
+        <field name="owner_attachments" type="list"
+               class="inputbox"
+               label="COM_FLEXFORMS_FORMS_FIELD_OWNER_ATTACHMENT"
+                >
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+        </field>
         <field name="send_sender_mail" type="list"
                class="inputbox"
                label="COM_FLEXFORMS_FORMS_FIELD_SEND_SENDER_MAIL"
@@ -81,5 +88,12 @@
                rows="15"
                cols="60"
                 />
+        <field name="sender_attachments" type="list"
+               class="inputbox"
+               label="COM_FLEXFORMS_FORMS_FIELD_SENDER_ATTACHMENT"
+                >
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+        </field>
     </fieldset>
 </form>

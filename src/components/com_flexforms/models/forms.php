@@ -74,13 +74,14 @@ class FlexformsModelForms extends F0FModel
     /**
      * submits a form
      *
-     * @param   array  $data  user data
+     * @param   array  $data   user data
+     * @param   array  $files  uploaded files
      *
      * @return bool
      *
      * @throws Exception
      */
-    public function submit($data)
+    public function submit($data, $files)
     {
         $item = $this->getItem();
         $dispatcher = JEventDispatcher::getInstance();
@@ -126,6 +127,12 @@ class FlexformsModelForms extends F0FModel
             // Parse text
             $ownerText = $this->parseMailText($item->owner_mail, $data, $form);
 
+            // Attach uploaded files
+            if (count($files) && $item->owner_attachments)
+            {
+                $this->attachFiles($files, $ownerMail);
+            }
+
             // Apply mail attributes
             $ownerMail->addRecipient($owners);
             $ownerMail->setSubject($item->owner_subject);
@@ -164,6 +171,12 @@ class FlexformsModelForms extends F0FModel
 
             // Parse text
             $senderText = $this->parseMailText($item->sender_mail, $data, $form);
+
+            // Attach uploaded files
+            if (count($files) && $item->sender_attachments)
+            {
+                $this->attachFiles($files, $senderMail);
+            }
 
             // Apply mail attributes
             $senderMail->addRecipient($data[$item->sender_field]);
@@ -224,5 +237,21 @@ class FlexformsModelForms extends F0FModel
         }
 
         return $text;
+    }
+
+    /**
+     * Append uploaded files to sender or admin email
+     *
+     * @param   array  $files  array with uploaded files
+     * @param   JMail  &$mail  mail to send
+     *
+     * @return  void
+     */
+    protected function attachFiles(array $files, JMail &$mail)
+    {
+        foreach ($files AS $file)
+        {
+            $mail->addAttachment($file['tmp_name'], $file['name']);
+        }
     }
 }
