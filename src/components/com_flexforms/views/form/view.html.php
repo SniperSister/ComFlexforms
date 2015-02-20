@@ -58,8 +58,8 @@ class FlexformsViewForm extends F0FViewHtml
     /**
      * check different options for layout overwrites
      *
-     * @param   string  $layoutName
-     * @param   string  $formName
+     * @param   string  $layoutName  name of layout file that should be loaded
+     * @param   string  $formName    name of form
      *
      * @return  string
      *
@@ -77,6 +77,7 @@ class FlexformsViewForm extends F0FViewHtml
             {
                 throw new Exception("Invalid layout");
             }
+
             return $path;
         }
 
@@ -88,6 +89,7 @@ class FlexformsViewForm extends F0FViewHtml
             {
                 throw new Exception("Invalid layout");
             }
+
             return $path;
         }
 
@@ -99,6 +101,7 @@ class FlexformsViewForm extends F0FViewHtml
             {
                 throw new Exception("Invalid layout");
             }
+
             return $path;
         }
 
