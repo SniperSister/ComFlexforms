@@ -24,4 +24,7 @@ if (!defined('F0F_INCLUDED') || !class_exists('F0FForm', true))
     throw new Exception("F0F not found");
 }
 
+// Load flexform plugins
+JPluginHelper::importPlugin('flexforms');
+
 F0FDispatcher::getTmpInstance('com_flexforms')->dispatch();

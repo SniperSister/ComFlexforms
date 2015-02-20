@@ -36,6 +36,8 @@ class FlexformsModelForms extends F0FModel
             throw new Exception("Invalid form returned");
         }
 
+        JEventDispatcher::getInstance()->trigger('onBeforeFlexformsReturnForm', array($form));
+
         return $form;
     }
 
@@ -51,6 +53,7 @@ class FlexformsModelForms extends F0FModel
     public function validateUserForm($data)
     {
         $item = $this->getItem();
+        $dispatcher = JEventDispatcher::getInstance();
 
         if (!$item->flexforms_form_id)
         {
@@ -59,9 +62,11 @@ class FlexformsModelForms extends F0FModel
 
         $form = $this->getFormDefinition();
 
+        $dispatcher->trigger('onBeforeFlexformsValidate', array(&$item, &$form, &$data));
+
         $result = $form->validate($data);
 
-        JEventDispatcher::getInstance()->trigger('onBeforeFlexformsValidate', array(&$item, &$form, &$data, &$result));
+        $dispatcher->trigger('onAfterFlexformsValidate', array(&$item, &$form, &$data, &$result));
 
         return $result;
     }
@@ -78,6 +83,7 @@ class FlexformsModelForms extends F0FModel
     public function submit($data)
     {
         $item = $this->getItem();
+        $dispatcher = JEventDispatcher::getInstance();
 
         if (!$item->flexforms_form_id)
         {
@@ -86,9 +92,7 @@ class FlexformsModelForms extends F0FModel
 
         $form = $this->getFormDefinition();
 
-        // Load flexform plugins
-        JPluginHelper::importPlugin('flexforms');
-        JEventDispatcher::getInstance()->trigger('onBeforeFlexformsSubmit', array(&$item, &$form, &$data));
+        $dispatcher->trigger('onBeforeFlexformsSubmit', array(&$item, &$form, &$data));
 
         // Prepare owner mail
         if ($item->send_owner_mail == 1)
@@ -171,18 +175,18 @@ class FlexformsModelForms extends F0FModel
         // Everything seems to be fine, send mails
         if (!empty($ownerMail))
         {
-            JEventDispatcher::getInstance()->trigger('onBeforeFlexformsSendOwnerMail', array(&$item, &$form, &$data, &$ownerMail));
+            $dispatcher->trigger('onBeforeFlexformsSendOwnerMail', array(&$item, &$form, &$data, &$ownerMail));
             $ownerMail->Send();
         }
 
         if (!empty($senderMail))
         {
-            JEventDispatcher::getInstance()->trigger('onBeforeFlexformsSendSenderMail', array(&$item, &$form, &$data, &$senderMail));
+            $dispatcher->trigger('onBeforeFlexformsSendSenderMail', array(&$item, &$form, &$data, &$senderMail));
             $senderMail->Send();
         }
 
         // Trigger "after submit" event
-        JEventDispatcher::getInstance()->trigger('onAfterFlexformsSubmit', array(&$item, &$form, &$data));
+        $dispatcher->trigger('onAfterFlexformsSubmit', array(&$item, &$form, &$data));
 
         return true;
     }
