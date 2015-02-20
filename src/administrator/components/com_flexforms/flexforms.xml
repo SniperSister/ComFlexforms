@@ -7,7 +7,7 @@
     <license>GNU General Public License version 3 or later; see LICENSE.txt</license>
     <authorEmail>info@djumla.de</authorEmail>
     <authorUrl>www.djumla.de</authorUrl>
-    <version>0.2.1</version>
+    <version>0.3.0</version>
     <description>Flexforms form component</description>
 
     <install> <!-- Runs on install -->
@@ -64,5 +64,8 @@
             <language tag="en-GB">language/en-GB.com_flexforms.sys.ini</language>
         </languages>
     </administration>
+    <updateservers>
+        <server type="extension" priority="1" name="djumla extensions update server">http://extensions.djumla.de/component/ars/updates/components/flexforms?format=xml&amp;dummy=extension.xml</server>
+    </updateservers>
 </extension>
 
