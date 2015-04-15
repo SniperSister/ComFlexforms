@@ -36,7 +36,12 @@ class FlexformsModelForms extends F0FModel
             throw new Exception("Invalid form returned");
         }
 
+        // Load flexform plugins
+        JPluginHelper::importPlugin('flexforms');
+
         JEventDispatcher::getInstance()->trigger('onBeforeFlexformsReturnForm', array($form));
+
+        $this->loadFormLanguageFiles($item->form);
 
         return $form;
     }
@@ -67,6 +72,14 @@ class FlexformsModelForms extends F0FModel
         $result = $form->validate($data);
 
         $dispatcher->trigger('onAfterFlexformsValidate', array(&$item, &$form, &$data, &$result));
+
+        if ( ! $result)
+        {
+            foreach($form->getErrors() as $error)
+            {
+                $this->setError($error->getMessage());
+            }
+        }
 
         return $result;
     }
@@ -124,6 +137,8 @@ class FlexformsModelForms extends F0FModel
                 }
             }
 
+            $dispatcher->trigger('onBeforeParseOwnerEmailtext', array(&$item, &$form, &$data));
+
             // Parse text
             $ownerText = $this->parseMailText($item->owner_mail, $data, $form);
 
@@ -133,11 +148,14 @@ class FlexformsModelForms extends F0FModel
                 $this->attachFiles($files, $ownerMail);
             }
 
+            $dispatcher->trigger('onAfterParseOwnerEmailtext', array(&$item, &$form, &$data, &$ownerText));
+
             // Apply mail attributes
             $ownerMail->addRecipient($owners);
             $ownerMail->setSubject($item->owner_subject);
             $ownerMail->setBody($ownerText);
             $ownerMail->isHtml(false);
+
         }
 
         // Prepare sender email
@@ -169,6 +187,8 @@ class FlexformsModelForms extends F0FModel
                 throw new Exception("Invalid sender addresses");
             }
 
+            $dispatcher->trigger('onBeforeParseSenderEmailtext', array(&$item, &$form, &$data));
+
             // Parse text
             $senderText = $this->parseMailText($item->sender_mail, $data, $form);
 
@@ -177,6 +197,7 @@ class FlexformsModelForms extends F0FModel
             {
                 $this->attachFiles($files, $senderMail);
             }
+            $dispatcher->trigger('onAfterParseSenderEmailtext', array(&$item, &$form, &$data, $senderText));
 
             // Apply mail attributes
             $senderMail->addRecipient($data[$item->sender_field]);
@@ -254,4 +275,26 @@ class FlexformsModelForms extends F0FModel
             $mail->addAttachment($file['tmp_name'], $file['name']);
         }
     }
+
+    /**
+     * Load form specific language files
+     * filename must be com_flexforms.{formname}.ini and be save in system language folder
+     * or in media/com_flexforms/language/{LANG}/
+     *
+     * @param   string  $form  The name of the form
+     *
+     * @return  void
+     */
+    protected function loadFormLanguageFiles ($form)
+    {
+        $jlang = JFactory::getLanguage();
+        $jlang->load('com_flexforms.' . $form, JPATH_SITE, 'en-GB', true);
+        $jlang->load('com_flexforms.' . $form, JPATH_SITE, $jlang->getDefault(), true);
+        $jlang->load('com_flexforms.' . $form, JPATH_SITE, null, true);
+
+        $jlang->load('com_flexforms.' . $form, JPATH_SITE . '/media/com_flexforms', 'en-GB', true);
+        $jlang->load('com_flexforms.' . $form, JPATH_SITE . '/media/com_flexforms', $jlang->getDefault(), true);
+        $jlang->load('com_flexforms.' . $form, JPATH_SITE . '/media/com_flexforms', null, true);
+    }
+
 }
