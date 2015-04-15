@@ -86,6 +86,10 @@ FlexForms triggers a ton of plugin events during execution. To make use of these
  * onBeforeFlexformsSendOwnerMail
  * onBeforeFlexformsSendSenderMail
  * onAfterFlexformsSubmit
+ * onBeforeFlexformsParseSenderEmailtext
+ * onAfterFlexformsParseSenderEmailtext
+ * onBeforeFlexformsParseOwnerEmailtext
+ * onAfterFlexformsParseOwnerEmailtext
  
 ## FAQ
 

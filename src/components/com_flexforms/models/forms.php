@@ -125,7 +125,11 @@ class FlexformsModelForms extends F0FModel
             }
 
             // Parse text
+            $dispatcher->trigger('onBeforeFlexformsParseOwnerEmailtext', array(&$item, &$form, &$data));
+
             $ownerText = $this->parseMailText($item->owner_mail, $data, $form);
+
+            $dispatcher->trigger('onAfterFlexformsParseOwnerEmailtext', array(&$item, &$form, &$data, &$ownerText));
 
             // Attach uploaded files
             if (count($files) && $item->owner_attachments)
@@ -170,7 +174,11 @@ class FlexformsModelForms extends F0FModel
             }
 
             // Parse text
+            $dispatcher->trigger('onBeforeFlexformsParseSenderEmailtext', array(&$item, &$form, &$data));
+
             $senderText = $this->parseMailText($item->sender_mail, $data, $form);
+
+            $dispatcher->trigger('onAfterFlexformsParseSenderEmailtext', array(&$item, &$form, &$data, $senderText));
 
             // Attach uploaded files
             if (count($files) && $item->sender_attachments)
