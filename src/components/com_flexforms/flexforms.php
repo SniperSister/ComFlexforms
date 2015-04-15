@@ -27,4 +27,7 @@ if (!defined('F0F_INCLUDED') || !class_exists('F0FForm', true))
 // Load flexform plugins
 JPluginHelper::importPlugin('flexforms');
 
+// Register helper class
+JLoader::register('FlexformsHelperLanguage', JPATH_COMPONENT . "/helpers/language.php");
+
 F0FDispatcher::getTmpInstance('com_flexforms')->dispatch();

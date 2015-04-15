@@ -91,6 +91,9 @@ class FlexformsModelForms extends F0FModel
             throw new Exception("Invalid form");
         }
 
+        // Load form specific language files
+        FlexformsHelperLanguage::loadFormLanguageFiles($item->form);
+
         $form = $this->getFormDefinition();
 
         $dispatcher->trigger('onBeforeFlexformsSubmit', array(&$item, &$form, &$data));

@@ -31,6 +31,7 @@
         <filename>dispatcher.php</filename>
         <filename>flexforms.php</filename>
         <filename>index.html</filename>
+        <folder>helpers</folder>
         <folder>views</folder>
         <folder>models</folder>
         <folder>controllers</folder>
