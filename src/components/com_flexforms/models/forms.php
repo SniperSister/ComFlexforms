@@ -68,6 +68,15 @@ class FlexformsModelForms extends F0FModel
 
         $dispatcher->trigger('onAfterFlexformsValidate', array(&$item, &$form, &$data, &$result));
 
+        // Append error messages
+        if ( ! $result)
+        {
+            foreach ($form->getErrors() as $error)
+            {
+                $this->setError($error->getMessage());
+            }
+        }
+
         return $result;
     }
 

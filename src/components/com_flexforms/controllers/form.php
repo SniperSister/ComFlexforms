@@ -48,6 +48,12 @@ class FlexformsControllerForm extends F0FController
                 'error'
             );
 
+            // Append more specific error messages created by JForm
+            foreach ($model->getErrors() as $error)
+            {
+                JFactory::getApplication()->enqueueMessage($error, 'error');
+            }
+
             return;
         }
 
