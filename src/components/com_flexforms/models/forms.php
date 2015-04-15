@@ -36,6 +36,8 @@ class FlexformsModelForms extends F0FModel
             throw new Exception("Invalid form returned");
         }
 
+        JEventDispatcher::getInstance()->trigger('onBeforeFlexformsReturnForm', array($form));
+
         return $form;
     }
 
@@ -51,6 +53,7 @@ class FlexformsModelForms extends F0FModel
     public function validateUserForm($data)
     {
         $item = $this->getItem();
+        $dispatcher = JEventDispatcher::getInstance();
 
         if (!$item->flexforms_form_id)
         {
@@ -59,9 +62,20 @@ class FlexformsModelForms extends F0FModel
 
         $form = $this->getFormDefinition();
 
+        $dispatcher->trigger('onBeforeFlexformsValidate', array(&$item, &$form, &$data));
+
         $result = $form->validate($data);
 
-        JEventDispatcher::getInstance()->trigger('onBeforeFlexformsValidate', array(&$item, &$form, &$data, &$result));
+        $dispatcher->trigger('onAfterFlexformsValidate', array(&$item, &$form, &$data, &$result));
+
+        // Append error messages
+        if ( ! $result)
+        {
+            foreach ($form->getErrors() as $error)
+            {
+                $this->setError($error->getMessage());
+            }
+        }
 
         return $result;
     }
@@ -69,26 +83,29 @@ class FlexformsModelForms extends F0FModel
     /**
      * submits a form
      *
-     * @param   array  $data  user data
+     * @param   array  $data   user data
+     * @param   array  $files  uploaded files
      *
      * @return bool
      *
      * @throws Exception
      */
-    public function submit($data)
+    public function submit($data, $files)
     {
         $item = $this->getItem();
+        $dispatcher = JEventDispatcher::getInstance();
 
         if (!$item->flexforms_form_id)
         {
             throw new Exception("Invalid form");
         }
 
+        // Load form specific language files
+        FlexformsHelperLanguage::loadFormLanguageFiles($item->form);
+
         $form = $this->getFormDefinition();
 
-        // Load flexform plugins
-        JPluginHelper::importPlugin('flexforms');
-        JEventDispatcher::getInstance()->trigger('onBeforeFlexformsSubmit', array(&$item, &$form, &$data));
+        $dispatcher->trigger('onBeforeFlexformsSubmit', array(&$item, &$form, &$data));
 
         // Prepare owner mail
         if ($item->send_owner_mail == 1)
@@ -120,7 +137,17 @@ class FlexformsModelForms extends F0FModel
             }
 
             // Parse text
+            $dispatcher->trigger('onBeforeFlexformsParseOwnerEmailtext', array(&$item, &$form, &$data));
+
             $ownerText = $this->parseMailText($item->owner_mail, $data, $form);
+
+            $dispatcher->trigger('onAfterFlexformsParseOwnerEmailtext', array(&$item, &$form, &$data, &$ownerText));
+
+            // Attach uploaded files
+            if (count($files) && $item->owner_attachments)
+            {
+                $this->attachFiles($files, $ownerMail);
+            }
 
             // Apply mail attributes
             $ownerMail->addRecipient($owners);
@@ -159,7 +186,17 @@ class FlexformsModelForms extends F0FModel
             }
 
             // Parse text
+            $dispatcher->trigger('onBeforeFlexformsParseSenderEmailtext', array(&$item, &$form, &$data));
+
             $senderText = $this->parseMailText($item->sender_mail, $data, $form);
+
+            $dispatcher->trigger('onAfterFlexformsParseSenderEmailtext', array(&$item, &$form, &$data, $senderText));
+
+            // Attach uploaded files
+            if (count($files) && $item->sender_attachments)
+            {
+                $this->attachFiles($files, $senderMail);
+            }
 
             // Apply mail attributes
             $senderMail->addRecipient($data[$item->sender_field]);
@@ -171,18 +208,18 @@ class FlexformsModelForms extends F0FModel
         // Everything seems to be fine, send mails
         if (!empty($ownerMail))
         {
-            JEventDispatcher::getInstance()->trigger('onBeforeFlexformsSendOwnerMail', array(&$item, &$form, &$data, &$ownerMail));
+            $dispatcher->trigger('onBeforeFlexformsSendOwnerMail', array(&$item, &$form, &$data, &$ownerMail));
             $ownerMail->Send();
         }
 
         if (!empty($senderMail))
         {
-            JEventDispatcher::getInstance()->trigger('onBeforeFlexformsSendSenderMail', array(&$item, &$form, &$data, &$senderMail));
+            $dispatcher->trigger('onBeforeFlexformsSendSenderMail', array(&$item, &$form, &$data, &$senderMail));
             $senderMail->Send();
         }
 
         // Trigger "after submit" event
-        JEventDispatcher::getInstance()->trigger('onAfterFlexformsSubmit', array(&$item, &$form, &$data));
+        $dispatcher->trigger('onAfterFlexformsSubmit', array(&$item, &$form, &$data));
 
         return true;
     }
@@ -220,5 +257,21 @@ class FlexformsModelForms extends F0FModel
         }
 
         return $text;
+    }
+
+    /**
+     * Append uploaded files to sender or admin email
+     *
+     * @param   array  $files  array with uploaded files
+     * @param   JMail  &$mail  mail to send
+     *
+     * @return  void
+     */
+    protected function attachFiles(array $files, JMail &$mail)
+    {
+        foreach ($files AS $file)
+        {
+            $mail->addAttachment($file['tmp_name'], $file['name']);
+        }
     }
 }

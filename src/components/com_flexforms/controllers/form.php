@@ -30,8 +30,17 @@ class FlexformsControllerForm extends F0FController
         $input = JFactory::getApplication()->input;
         $model = $this->getThisModel();
 
+        $inputData = $input->post->getArray();
+        $uploadedFiles = $input->files->getArray();
+
+        // Merge uploaded files and post data into one array for validation
+        foreach ($uploadedFiles as $field => $file)
+        {
+            $inputData[$field] = $file['name'];
+        }
+
         // Validate user input before starting the send process
-        if (!$model->validateUserForm($input->post->getArray()))
+        if (!$model->validateUserForm($inputData))
         {
             $this->setRedirect(
                 JRoute::_('index.php?option=com_flexforms&view=form&id=' . (int) $input->post->get('id'), false),
@@ -39,13 +48,19 @@ class FlexformsControllerForm extends F0FController
                 'error'
             );
 
+            // Append more specific error messages created by JForm
+            foreach ($model->getErrors() as $error)
+            {
+                JFactory::getApplication()->enqueueMessage($error, 'error');
+            }
+
             return;
         }
 
         // Try to submit the form
         try
         {
-            $model->submit($input->post->getArray());
+            $model->submit($inputData, $uploadedFiles);
         }
         // An error occurred
         catch (Exception $e)
@@ -56,6 +71,7 @@ class FlexformsControllerForm extends F0FController
                 'error'
             );
 
+
             return;
         }
 
@@ -63,7 +79,7 @@ class FlexformsControllerForm extends F0FController
         $this->setRedirect(
             JRoute::_('index.php?option=com_flexforms&view=form&id=' . (int) $input->post->get('id'), false),
             JText::_('COM_FLEXFORMS_FORM_SUBMIT_MSG_SENT'),
-            'msg'
+            'message'
         );
     }
 }
