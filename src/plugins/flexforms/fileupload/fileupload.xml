@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.3" type="plugin" group="flexform">
+	<name>plg_flexform_fileupload</name>
+	<creationDate>January 2015</creationDate>
+	<author>Robert Deutz</author>
+	<copyright>Robert Deutz</copyright>
+	<license>GNU General Public License version 3</license>
+	<authorEmail>rdeutz@googlemail.com</authorEmail>
+	<authorUrl>robert-deutz.de</authorUrl>
+	<version>1.0</version>
+	<description>PLG_FLEXFORM_FILEUPLOAD_XML_DESCRIPTION</description>
+	<files>
+		<filename plugin="fileupload">fileupload.php</filename>
+	</files>
+	<languages>
+		<language tag="en-GB">en-GB.plg_flexform_fileupload.ini</language>
+	</languages>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field name="uploaddir" type="text" size="50" default="" label="PLG_FLEXFORM_FILEUPLOAD" description="PLG_FLEXFORM_FILEUPLOAD_DESC"/>
+			</fieldset>
+		</fields>
+	</config>
+</extension>

@@ -13,7 +13,7 @@ defined('_JEXEC') or die();
 
 <h1><?php echo $this->item->title ?></h1>
 
-<form action="<?php echo JRoute::_('index.php'); ?>" method="post" id="flexforms-form-" class="flexforms-form form-validate formid-<?php echo $this->item->flexforms_form_id ?> formtype-<?php echo $this->item->form ?>">
+<form enctype="multipart/form-data" action="<?php echo JRoute::_('index.php'); ?>" method="post" id="flexforms-form-<?php echo $this->item->flexforms_form_id ?>" class="flexforms-form form-validate formid-<?php echo $this->item->flexforms_form_id ?> formtype-<?php echo $this->item->form ?>">
 
     <?php foreach($this->form->getFieldset() as $field): ?>
         <?php echo $field->label; ?>
