@@ -58,7 +58,8 @@ class FlexformsHelperFileselect
                         {
                             // Add an option to the template group
                             $value = "tpl." . $template->element . "." . basename($file, '.php');
-                            $text = JText::sprintf('COM_FLEXFORMS_FORMS_FIELD_LAYOUT_OPTION_TEMPLATE', $template->name) . " - " . basename($file, '.php');
+                            $text = JText::sprintf('COM_FLEXFORMS_FORMS_FIELD_LAYOUT_OPTION_TEMPLATE', $template->name)
+                                . " - " . basename($file, '.php');
                             $options[$value] = $text;
                         }
                     }

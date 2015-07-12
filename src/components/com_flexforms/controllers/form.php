@@ -71,7 +71,6 @@ class FlexformsControllerForm extends F0FController
                 'error'
             );
 
-
             return;
         }
 

@@ -109,7 +109,6 @@ class FlexformsViewForm extends F0FViewHtml
         throw new Exception("Invalid layout");
     }
 
-
     /**
      * Displays the view
      *

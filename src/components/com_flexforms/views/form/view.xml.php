@@ -14,6 +14,13 @@
  */
 class FlexformsViewForm extends F0FView
 {
+    /**
+     * override XML output
+     *
+     * @param   string  $tpl  template name
+     *
+     * @return  void
+     */
     public function display($tpl = null)
     {
         return;
