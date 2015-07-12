@@ -2,7 +2,7 @@
 
 FlexForms is a form extension built by developers, for developers. It:
 
-* is build for Joomla 3.x
+* is built for Joomla 3.x
 * is based on F0F (you need to install it, it's not the included FOF within the Joomla! Core)
 * uses JForm XML files for the form building and validation
 * has a per-form layout override system to allow individual styles
@@ -47,17 +47,17 @@ So, for example to get a dead easy contact form, you create a file called "conta
 ### Configure your form
 In the backend, navigate to "Components->FlexForms", hit "New" and configure your form:
 
- * **Title**: that's the human readable form title that is, by default, also used as the heading
- * **Status**: self explaining, huh?
+ * **Title**: the human readable form title that is, by default, also used as the heading
+ * **Status**: self explanatory, huh?
  * **Layout**: select the layout that is used to display your form - see below for a more detailed explanation
  * **Form**: select the XML file that contains your form definition
  * **Send mail to admin**: select if an email with the submitted form should be sent to the administrator(s)
  * **Administrators**: provide one or more email addresses that should receive the form; comma-separate multiple addresses
- * **Admin-mail subject**: self explaining
+ * **Admin-mail subject**: self explanatory
  * **Admin-mail text**: define the mail body. You can use placeholders that follow the pattern {LOWERCASEFIELDNAME}
  * **Admin-mail attachments**: attach uploaded files to the admin mail
- * **Send mail to user**: select if an email should be send to the user who has submitted the form
- * **User emailfield**: enter the fieldname of the field, where the user has entered his emailaddress
+ * **Send mail to user**: select if an email should be sent to the user who has submitted the form
+ * **User emailfield**: enter the name of the field where the user has entered his email address
  * **User-mail subject, text, attachments**: see above
  
 Afterwards, hit save, create a menu item and you're ready to go!
@@ -71,8 +71,8 @@ This is where the fun part starts! With FlexForms, you have the possibilty to cr
 You have three choices:
 
  1. use the default layout provided by the component.
- 2. use a form specific layout file that is saved in the same folder as the XML. To do so, create your layout (by creating a copy of the default component layout) and save it as FORMNAME.php in the /media/com_flexforms/forms directory. Afterwards, select "Media directory" as layout option in the form parameters.
- 3. use a custom, form-independent layout. To do so, create your layout and save it in the html/com_flexforms/form directory of your template. Afterwards, select it in the form parameters.
+ 2. use a form specific layout file that is saved in the same folder as the XML. To do this, create your layout (by creating a copy of the default component layout) and save it as FORMNAME.php in the /media/com_flexforms/forms directory. Afterwards, select "Media directory" as layout option in the form parameters.
+ 3. use a custom, form-independent layout. To do this, create your layout and save it in the html/com_flexforms/form directory of your template. Afterwards, select it in the form parameters.
  
 ### Using language files
 You can create per-form language files to create multi-language forms. Save your language strings in an INI-file named com_flexforms.FORMNAME.ini in the /media/com_flexforms/language/{LANG}/ directory.
