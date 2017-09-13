@@ -89,10 +89,21 @@
                 />
         <field name="sender_attachments" type="list"
                class="inputbox"
-               label="COM_FLEXFORMS_FORMS_FIELD_SENDER_ATTACHMENT"
+               label="COM_FLEXFORMS_FORMS_FIELD_SENDER_ATTACHMENTS"
                 >
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
+        </field>
+        <field
+                name="captcha"
+                type="plugins"
+                label="COM_FLEXFORMS_FORMS_FIELD_CAPTCHA"
+                default=""
+                folder="captcha"
+                filter="cmd"
+                >
+                <option value="">JOPTION_USE_DEFAULT</option>
+                <option value="0">JOPTION_DO_NOT_USE</option>
         </field>
     </fieldset>
 </form>
