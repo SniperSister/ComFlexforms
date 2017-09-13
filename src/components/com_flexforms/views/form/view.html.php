@@ -15,6 +15,13 @@
 class FlexformsViewForm extends F0FViewHtml
 {
     /**
+     * Should we show a captcha form for the submission of the form?
+     *
+     * @var bool
+     */
+    protected $captchaEnabled = false;
+
+    /**
      * display a form
      *
      * @param   null  $tpl  template to use
@@ -37,6 +44,20 @@ class FlexformsViewForm extends F0FViewHtml
         JHtml::_('behavior.formvalidation');
 
         $this->_tempFilePath = $this->getLayoutFile($this->item->layout, $this->item->form);
+
+        $captchaSet = $this->item->captcha;
+        if (trim($captchaSet) == '')
+        {
+            $captchaSet = JFactory::getApplication()->get('captcha', '0');
+        }
+        foreach (JPluginHelper::getPlugin('captcha') as $plugin)
+        {
+            if ($captchaSet === $plugin->name)
+            {
+                $this->captchaEnabled = true;
+                break;
+            }
+        }
 
         unset($model);
         unset($tpl);

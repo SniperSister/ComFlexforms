@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS `#__flexforms_forms` (
   `sender_mail` mediumtext DEFAULT NULL,
   `sender_field` varchar(255) DEFAULT NULL,
   `sender_attachments` tinyint(1) unsigned NOT NULL,
+  `captcha` varchar(255) NOT NULL DEFAULT '',
   `created_on` datetime NOT NULL,
   `created_by` int(11) unsigned NOT NULL,
   `modified_on` datetime DEFAULT NULL,
