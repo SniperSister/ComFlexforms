@@ -19,6 +19,11 @@ defined('_JEXEC') or die();
         <?php echo $field->input; ?>
     <?php endforeach; ?>
 
+
+    <?php if ($this->captchaEnabled): ?>
+        <?php echo $this->form->renderField('captcha'); ?>
+    <?php endif; ?>
+
     <div class="clearfix"></div>
 
     <input type="submit" />
