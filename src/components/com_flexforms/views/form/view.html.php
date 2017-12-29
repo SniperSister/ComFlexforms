@@ -31,6 +31,16 @@ class FlexformsViewForm extends F0FViewHtml
         $this->assign('item', $model->getItem());
         $this->assign('form', $model->getFormDefinition($this->item->flexforms_form_id));
 
+        // Generate submit route - use a plain index.php if the component is called from the plugin
+        $route = JRoute::_('index.php');
+
+        if (!JFactory::getApplication()->input->get('option', 'com_flexforms') !== "com_flexforms")
+        {
+            $route = JURI::base() . 'index.php';
+        }
+
+        $this->assign('route', $route);
+
         // Load form specific language files
         FlexformsHelperLanguage::loadFormLanguageFiles($this->item->form);
 

@@ -18,7 +18,9 @@
         </tstamp>
 
         <echo msg="fetching current versions" />
+
         <xmlproperty file="./src/administrator/components/com_flexforms/flexforms.xml" prefix="com"/>
+        <xmlproperty file="./src/plugins/content/flexforms/flexforms.xml" prefix="plg"/>
     </target>
 
     <!-- ============================================  -->
@@ -27,6 +29,7 @@
     <target name="build" depends="prepare">
         <echo msg="Deleting files from build directory" />
         <delete dir="./build/com" />
+        <delete dir="./build/plg" />
 
         <echo msg="Copying files to build directory..." />
 
@@ -67,8 +70,12 @@
         <echo msg="Copying admin language folder" />
         <copy todir="./build/com/admin/language">
             <fileset dir="./src/administrator/language/de-DE">
+                <exclude name="de-DE.plg_content_flexforms.ini"/>
+                <exclude name="de-DE.plg_content_flexforms.sys.ini"/>
             </fileset>
             <fileset dir="./src/administrator/language/en-GB">
+                <exclude name="en-GB.plg_content_flexforms.ini"/>
+                <exclude name="en-GB.plg_content_flexforms.sys.ini"/>
             </fileset>
             <filterchain>
                 <replacetokens begintoken="%%" endtoken="%%">
@@ -98,6 +105,35 @@
                 </replacetokens>
             </filterchain>
         </copy>
+
+        <echo msg="Copying plugin files" />
+        <copy todir="./build/plg">
+            <fileset dir="./src/plugins/content/flexforms">
+            </fileset>
+            <filterchain>
+                <replacetokens begintoken="%%" endtoken="%%">
+                    <token key="PLUGINVERSION" value="${plg.extension.version}" />
+                    <token key="CURRENTDATE" value="${xmlstamp}" />
+                </replacetokens>
+            </filterchain>
+        </copy>
+
+        <echo msg="Copying plugin language files" />
+        <copy todir="./build/plg/language">
+            <fileset dir="./src/administrator/language/de-DE">
+                <exclude name="de-DE.com_flexforms.ini"/>
+                <exclude name="de-DE.com_flexforms.sys.ini"/>
+            </fileset>
+            <fileset dir="./src/administrator/language/en-GB">
+                <exclude name="en-GB.com_flexforms.ini"/>
+                <exclude name="en-GB.com_flexforms.sys.ini"/>
+            </fileset>
+            <filterchain>
+                <replacetokens begintoken="%%" endtoken="%%">
+                    <token key="PLUGINVERSION" value="${plg.extension.version}" />
+                </replacetokens>
+            </filterchain>
+        </copy>
     </target>
 
     <!-- ============================================  -->
@@ -108,6 +144,15 @@
 
         <zip destfile="./build/com_flexforms_${com.extension.version}_${zipstamp}.zip">
             <fileset dir="./build/com">
+                <include name="*" />
+                <include name="**/*" />
+            </fileset>
+        </zip>
+
+        <echo msg="Creating plugin archive..." />
+
+        <zip destfile="./build/plg_content_flexforms_${plg.extension.version}_${zipstamp}.zip">
+            <fileset dir="./build/plg">
                 <include name="*" />
                 <include name="**/*" />
             </fileset>

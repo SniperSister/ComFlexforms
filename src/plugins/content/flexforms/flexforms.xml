@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.7" type="plugin" group="content" method="upgrade">
+    <name>plg_content_flexforms</name>
+    <author>David Jardin</author>
+    <creationDate>%%CURRENTDATE%%</creationDate>
+    <copyright>(C) David Jardin - djumla. All rights reserved.</copyright>
+    <license>GNU General Public License version 3 or later; see LICENSE.txt</license>
+    <authorEmail>info@djumla.de</authorEmail>
+    <authorUrl>www.djumla.de</authorUrl>
+    <version>0.4.0</version>
+    <description>Flexforms Content Plugin</description>
+    <files>
+        <file plugin="flexforms">flexforms.php</file>
+        <filename>index.html</filename>
+    </files>
+    <languages>
+        <language tag="de-DE">language/de-DE.plg_content_flexforms.ini</language>
+        <language tag="de-DE">language/de-DE.plg_content_flexforms.sys.ini</language>
+        <language tag="en-GB">language/en-GB.plg_content_flexforms.ini</language>
+        <language tag="en-GB">language/en-GB.plg_content_flexforms.sys.ini</language>
+    </languages>
+</extension>
