@@ -16,6 +16,8 @@ defined('_JEXEC') or die();
  */
 class FlexformsControllerForm extends F0FController
 {
+    protected $cacheableTasks = array();
+
     /**
      * submit form
      *
