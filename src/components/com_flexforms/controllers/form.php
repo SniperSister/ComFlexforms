@@ -74,9 +74,17 @@ class FlexformsControllerForm extends F0FController
             return;
         }
 
+        // Use provided URL for redirect to success page
+        $successUrl = JRoute::_('index.php?option=com_flexforms&view=form&id=' . (int) $input->post->get('id'), false);
+
+        if (!empty($inputData['successUrl']) && Juri::isInternal(base64_decode($inputData['successUrl'])))
+        {
+            $successUrl = base64_decode($inputData['successUrl']);
+        }
+
         // Everything went fine, return
         $this->setRedirect(
-            JRoute::_('index.php?option=com_flexforms&view=form&id=' . (int) $input->post->get('id'), false),
+            $successUrl,
             JText::_('COM_FLEXFORMS_FORM_SUBMIT_MSG_SENT'),
             'message'
         );
