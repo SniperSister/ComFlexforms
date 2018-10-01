@@ -269,7 +269,7 @@ class FlexformsModelForms extends F0FModel
      */
     protected function attachFiles(array $files, JMail &$mail)
     {
-        JEventDispatcher::getInstance()->trigger('onBeforeFlexformsAttachmentSubmit', array(&$files));
+        JEventDispatcher::getInstance()->trigger('onBeforeFlexformsAddAttachments', array(&$files));
 
         if (count($files))
         {
