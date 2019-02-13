@@ -9,7 +9,7 @@ FlexForms is a form extension built by developers, for developers. It:
 * triggers the Joomla plugin system to allow special tasks when submitting a form
 * it offers per-form language files for multilingual forms
 * sends, as an option, email to administrators and form submitters
-* attaches, as an option, uploaded files to these emails
+* attaches, as an option, uploaded or individual files to these emails
 
 ## Getting started
 
@@ -90,9 +90,10 @@ FlexForms triggers a ton of plugin events during execution. To make use of these
  * onAfterFlexformsParseSenderEmailtext
  * onBeforeFlexformsParseOwnerEmailtext
  * onAfterFlexformsParseOwnerEmailtext
+ * onBeforeFlexformsAddAttachments
  
 ## FAQ
 
  * **Does FlexForms store submitted forms in the database?** No, but you can write a plugin for this!
- * **Does FlexForms support multipage-forms** No, but you can create a layout override for this!
- * **Does FlexForms support captchas** Nope, but you can write a plugin for this!
+ * **Does FlexForms support multipage-forms?** No, but you can create a layout override for this!
+ * **Does FlexForms support captchas?** Nope, but you can write a plugin for this!

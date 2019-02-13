@@ -144,7 +144,7 @@ class FlexformsModelForms extends F0FModel
             $dispatcher->trigger('onAfterFlexformsParseOwnerEmailtext', array(&$item, &$form, &$data, &$ownerText));
 
             // Attach uploaded files
-            if (count($files) && $item->owner_attachments)
+            if ($item->owner_attachments)
             {
                 $this->attachFiles($files, $ownerMail);
             }
@@ -193,7 +193,7 @@ class FlexformsModelForms extends F0FModel
             $dispatcher->trigger('onAfterFlexformsParseSenderEmailtext', array(&$item, &$form, &$data, $senderText));
 
             // Attach uploaded files
-            if (count($files) && $item->sender_attachments)
+            if ($item->sender_attachments)
             {
                 $this->attachFiles($files, $senderMail);
             }
@@ -269,9 +269,14 @@ class FlexformsModelForms extends F0FModel
      */
     protected function attachFiles(array $files, JMail &$mail)
     {
-        foreach ($files AS $file)
+        JEventDispatcher::getInstance()->trigger('onBeforeFlexformsAddAttachments', array(&$files));
+
+        if (count($files))
         {
-            $mail->addAttachment($file['tmp_name'], $file['name']);
+            foreach ($files as $file)
+            {
+                $mail->addAttachment($file['tmp_name'], $file['name']);
+            }
         }
     }
 }
