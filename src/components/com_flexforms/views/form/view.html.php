@@ -138,6 +138,17 @@ class FlexformsViewForm extends F0FViewHtml
             $this->preRender();
         }
 
+        // Set meta data
+        if ($model->getState('parameters.menu')->get('menu-meta_description'))
+        {
+            JFactory::getDocument()->setDescription($model->getState('parameters.menu')->get('menu-meta_description'));
+        }
+
+        if ($model->getState('parameters.menu')->get('menu-meta_keywords'))
+        {
+            JFactory::getDocument()->setDescription($model->getState('parameters.menu')->get('menu-meta_keywords'));
+        }
+
         // Call the relevant method
         $method_name = 'on' . ucfirst($task);
 
