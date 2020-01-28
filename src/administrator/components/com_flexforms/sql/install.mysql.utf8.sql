@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `#__flexforms_forms` (
   `slug` varchar(255) NOT NULL,
   `layout` varchar(255) NOT NULL DEFAULT '',
   `form` varchar(255) NOT NULL DEFAULT '',
-  `redirecturl` VARCHAR(255) NOT NULL DEFAULT '' ;
+  `redirecturl` VARCHAR(255) NOT NULL DEFAULT '',
   `owners` varchar(255) NOT NULL DEFAULT '',
   `send_owner_mail` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `owner_subject` varchar(255) DEFAULT NULL,
