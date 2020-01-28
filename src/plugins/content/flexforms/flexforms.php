@@ -57,35 +57,108 @@ class PlgContentFlexforms extends JPlugin
             return false;
         }
 
-        // Load F0F and component
-        include_once JPATH_LIBRARIES . '/f0f/include.php';
-
-        if (!defined('F0F_INCLUDED') || !class_exists('F0FForm', true))
-        {
-            throw new Exception("F0F not found");
-        }
-
         // Load flexform plugins
         JPluginHelper::importPlugin('flexforms');
 
-        // Register helper class
-        JLoader::register('FlexformsHelpersLanguage', JPATH_ROOT . "/components/com_flexforms/helpers/language.php");
+        // Load language helper
+        JLoader::registerPrefix('Flexforms', JPATH_SITE . "/components/com_flexforms");
+
+        jimport("joomla.filesystem.file");
 
         foreach ($matches as $match)
         {
-            // Config array
-            $config = array(
-                "input" => array("view" => "form", "option" => "com_flexforms", "task" => "read", "id" => $match[1])
-            );
+            // Load model
+            JModelLegacy::addIncludePath(JPATH_SITE . "/components/com_flexforms/models");
+            $model = JModelLegacy::getInstance('Form', 'FlexformsModel');
 
+            // Load data
+            $this->item = $model->getItem($match[1]);
+            $this->form = $model->getFormDefinition($this->item->id);
+
+            // Generate submit route - use a plain index.php if the component is called from the plugin
+            $route = JRoute::_('index.php');
+
+            if (!JFactory::getApplication()->input->get('option', 'com_flexforms') !== "com_flexforms")
+            {
+                $route = JURI::base() . 'index.php';
+            }
+
+            $this->route = $route;
+
+            // Load form specific language files
+            FlexformsHelpersLanguage::loadFormLanguageFiles($this->item->form);
+
+            JHtml::_('behavior.formvalidation');
+
+            $tempFilePath = $this->getLayoutFile($this->item->layout, $this->item->form);
+
+            unset($model);
+            unset($tpl);
+
+            // Start capturing output into a buffer
             ob_start();
 
-            F0FDispatcher::getTmpInstance('com_flexforms', "form", $config)->dispatch();
-            $formOutput = ob_get_contents();
+            // Include the requested template filename in the local scope (this will execute the view logic).
+            include $tempFilePath;
 
+            // Done with the requested template; get the buffer and clear it.
+            $output = ob_get_contents();
             ob_end_clean();
 
-            $article->text = str_replace($match[0], $formOutput, $article->text);
+            $article->text = str_replace($match[0], $output, $article->text);
         }
+    }
+
+    /**
+     * check different options for layout overwrites
+     *
+     * @param   string  $layoutName  name of layout file that should be loaded
+     * @param   string  $formName    name of form
+     *
+     * @return  string
+     *
+     * @throws Exception
+     */
+    protected function getLayoutFile($layoutName, $formName)
+    {
+        $layoutParts = explode(".", $layoutName);
+
+        if ($layoutParts[0] == "com")
+        {
+            $path = JPATH_SITE . "/components/com_flexforms/views/form/tmpl/" . $layoutParts[1] . ".php";
+
+            if (!JFile::exists($path))
+            {
+                throw new Exception("Invalid layout");
+            }
+
+            return $path;
+        }
+
+        if ($layoutParts[0] == "tpl")
+        {
+            $path = JPATH_SITE . "/templates/" . $layoutParts[1] . "/html/com_flexforms/form/" . $layoutParts[2] . ".php";
+
+            if (!JFile::exists($path))
+            {
+                throw new Exception("Invalid layout");
+            }
+
+            return $path;
+        }
+
+        if ($layoutParts[0] == "media")
+        {
+            $path = JPATH_SITE . "/media/com_flexforms/forms/" . $formName . ".php";
+
+            if (!JFile::exists($path))
+            {
+                throw new Exception("Invalid layout");
+            }
+
+            return $path;
+        }
+
+        throw new Exception("Invalid layout");
     }
 }

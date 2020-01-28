@@ -19,7 +19,7 @@ class FlexformsViewForm extends JViewLegacy
      *
      * @param   null  $tpl  template to use
      *
-     * @return  bool
+     * @return  boolean
      *
      * @throws  Exception
      */
