@@ -7,13 +7,82 @@
  * @link       http://www.djumla.de
  */
 
+use Joomla\CMS\Factory;
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * Class FlexformsModelForms
  *
  * @since  1.0.0
  */
-class FlexformsModelForms extends F0FModel
+class FlexformsModelForm extends JModelItem
 {
+    // @codingStandardsIgnoreLine
+    protected $_item;
+
+    /**
+     * Method to auto-populate the model state.
+     *
+     * Note. Calling getState in this method will result in recursion.
+     *
+     * @return void
+     *
+     * @since    1.6
+     */
+    protected function populateState()
+    {
+        $id = Factory::getApplication()->input->get('id');
+        $this->setState('form.id', $id);
+    }
+
+    public function getItem($id = null)
+    {
+        if ($this->_item === null)
+        {
+            $this->_item = false;
+
+            if (empty($id))
+            {
+                $id = $this->getState('form.id');
+            }
+
+            // Get a level row instance.
+            $table = $this->getTable();
+
+            // Attempt to load the row.
+            if ($table->load($id))
+            {
+                // Check published state.
+                if (!$table->enabled)
+                {
+                    throw new Exception(JText::_('NOT_FOUND'), 404);
+                }
+
+                // Convert the JTable to a clean JObject.
+                $properties  = $table->getProperties(1);
+                $this->_item = ArrayHelper::toObject($properties, 'JObject');
+            }
+        }
+
+        return $this->_item;
+    }
+
+    /**
+     * Get an instance of JTable class
+     *
+     * @param   string  $type    Name of the JTable class to get an instance of.
+     * @param   string  $prefix  Prefix for the table class name. Optional.
+     * @param   array   $config  Array of configuration values for the JTable object. Optional.
+     *
+     * @return  JTable|bool JTable if success, false on failure.
+     */
+    public function getTable($type = 'Form', $prefix = 'FlexformsTable', $config = array())
+    {
+        $this->addTablePath(JPATH_ADMINISTRATOR . '/components/com_flexforms/tables');
+
+        return JTable::getInstance($type, $prefix, $config);
+    }
+
     /**
      * fetch a form
      *
@@ -55,7 +124,7 @@ class FlexformsModelForms extends F0FModel
         $item = $this->getItem();
         $dispatcher = JEventDispatcher::getInstance();
 
-        if (!$item->flexforms_form_id)
+        if (!$item->id)
         {
             throw new Exception("Invalid form");
         }
@@ -95,13 +164,13 @@ class FlexformsModelForms extends F0FModel
         $item = $this->getItem();
         $dispatcher = JEventDispatcher::getInstance();
 
-        if (!$item->flexforms_form_id)
+        if (!$item->id)
         {
             throw new Exception("Invalid form");
         }
 
         // Load form specific language files
-        FlexformsHelperLanguage::loadFormLanguageFiles($item->form);
+        FlexformsHelpersLanguage::loadFormLanguageFiles($item->form);
 
         $form = $this->getFormDefinition();
 

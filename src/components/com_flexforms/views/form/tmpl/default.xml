@@ -14,7 +14,7 @@
                    label="COM_FLEXFORMS_FIELD_SELECT_FORM_LABEL"
                    required="true"
                    description="COM_FLEXFORMS_FIELD_SELECT_FORM_LABEL_DESC"
-                   query="SELECT flexforms_form_id AS id, title FROM #__flexforms_forms WHERE enabled = 1"
+                   query="SELECT id, title FROM #__flexforms_forms WHERE enabled = 1"
                    key_field="id"
                    value_field="title"
                     />

@@ -7,7 +7,7 @@
     <license>GNU General Public License version 3 or later; see LICENSE.txt</license>
     <authorEmail>info@djumla.de</authorEmail>
     <authorUrl>www.djumla.de</authorUrl>
-    <version>0.5.0</version>
+    <version>2.0.0</version>
     <description>Flexforms form component</description>
 
     <install> <!-- Runs on install -->
@@ -28,7 +28,7 @@
     </update>
 
     <files folder="site">
-        <filename>dispatcher.php</filename>
+        <filename>controller.php</filename>
         <filename>flexforms.php</filename>
         <filename>index.html</filename>
         <folder>helpers</folder>
@@ -48,15 +48,16 @@
     <administration>
         <menu>COM_FLEXFORMS_MENU</menu>
         <files folder="admin">
-            <filename>dispatcher.php</filename>
             <filename>flexforms.php</filename>
-            <filename>fof.xml</filename>
             <filename>config.xml</filename>
             <filename>access.xml</filename>
             <filename>index.html</filename>
             <folder>sql</folder>
+            <folder>models</folder>
+            <folder>controllers</folder>
             <folder>views</folder>
             <folder>helpers</folder>
+            <folder>tables</folder>
         </files>
         <languages folder="admin">
             <language tag="de-DE">language/de-DE.com_flexforms.ini</language>

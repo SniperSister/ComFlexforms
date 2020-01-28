@@ -14,7 +14,7 @@ defined('_JEXEC') or die();
  *
  * @since  1.0.0
  */
-class FlexformsControllerForm extends F0FController
+class FlexformsControllerForm extends JControllerLegacy
 {
     protected $cacheableTasks = array();
 
@@ -27,10 +27,11 @@ class FlexformsControllerForm extends F0FController
      */
     public function submit()
     {
-        $this->_csrfProtection();
+        $this->checkToken();
 
         $input = JFactory::getApplication()->input;
-        $model = $this->getThisModel();
+        /** @var FlexformsModelForm $model */
+        $model = $this->getModel('Form');
 
         $inputData = $input->post->getArray();
         $uploadedFiles = $input->files->getArray();
@@ -82,6 +83,12 @@ class FlexformsControllerForm extends F0FController
         if (!empty($inputData['successUrl']) && Juri::isInternal(base64_decode($inputData['successUrl'])))
         {
             $successUrl = base64_decode($inputData['successUrl']);
+        }
+
+        // Use hardcoded URL for redirect, overwriting everything else
+        if ($model->getItem()->redirecturl)
+        {
+            $successUrl = $model->getItem()->redirecturl;
         }
 
         // Everything went fine, return

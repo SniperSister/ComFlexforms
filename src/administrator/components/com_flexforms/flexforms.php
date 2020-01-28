@@ -16,12 +16,25 @@ if (!version_compare(phpversion(), '5.3.0', '>='))
     throw new Exception("Your PHP Version is outdated");
 }
 
-// Load F0F
-include_once JPATH_LIBRARIES . '/f0f/include.php';
-
-if (!defined('F0F_INCLUDED') || !class_exists('F0FForm', true))
+// Access check.
+if (!JFactory::getUser()->authorise('core.manage', 'com_flexforms'))
 {
-    throw new Exception("F0F not found");
+    throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
 }
 
-F0FDispatcher::getTmpInstance('com_flexforms')->dispatch();
+// Include dependancies
+jimport('joomla.application.component.controller');
+
+JLoader::registerPrefix(
+    'Flexforms',
+    JPATH_COMPONENT_ADMINISTRATOR
+);
+
+JLoader::register(
+    'FlexformsHelper',
+    JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'flexforms.php'
+);
+
+$controller = JControllerLegacy::getInstance('Flexforms');
+$controller->execute(JFactory::getApplication()->input->get('task'));
+$controller->redirect();

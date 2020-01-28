@@ -12,7 +12,7 @@
  *
  * @since  1.0.0
  */
-class FlexformsViewForm extends F0FViewHtml
+class FlexformsViewForm extends JViewLegacy
 {
     /**
      * display a form
@@ -23,13 +23,13 @@ class FlexformsViewForm extends F0FViewHtml
      *
      * @throws  Exception
      */
-    protected function onRead($tpl = null)
+    public function display($tpl = null)
     {
         jimport("joomla.filesystem.file");
 
         $model = $this->getModel();
         $this->assign('item', $model->getItem());
-        $this->assign('form', $model->getFormDefinition($this->item->flexforms_form_id));
+        $this->assign('form', $model->getFormDefinition($this->item->id));
 
         // Generate submit route - use a plain index.php if the component is called from the plugin
         $route = JRoute::_('index.php');
@@ -42,7 +42,7 @@ class FlexformsViewForm extends F0FViewHtml
         $this->assign('route', $route);
 
         // Load form specific language files
-        FlexformsHelperLanguage::loadFormLanguageFiles($this->item->form);
+        FlexformsHelpersLanguage::loadFormLanguageFiles($this->item->form);
 
         JHtml::_('behavior.formvalidation');
 
@@ -117,58 +117,5 @@ class FlexformsViewForm extends F0FViewHtml
         }
 
         throw new Exception("Invalid layout");
-    }
-
-    /**
-     * Displays the view
-     *
-     * @param   string  $tpl  The template to use
-     *
-     * @return  boolean|null False if we can't render anything
-     */
-    public function display($tpl = null)
-    {
-        // Get the task set in the model
-        $model = $this->getModel();
-        $task = $model->getState('task', 'browse');
-
-        // Show the view
-        if ($this->doPreRender)
-        {
-            $this->preRender();
-        }
-
-        // Set meta data
-        if ($model->getState('parameters.menu')->get('menu-meta_description'))
-        {
-            JFactory::getDocument()->setDescription($model->getState('parameters.menu')->get('menu-meta_description'));
-        }
-
-        if ($model->getState('parameters.menu')->get('menu-meta_keywords'))
-        {
-            JFactory::getDocument()->setDescription($model->getState('parameters.menu')->get('menu-meta_keywords'));
-        }
-
-        // Call the relevant method
-        $method_name = 'on' . ucfirst($task);
-
-        if (method_exists($this, $method_name))
-        {
-            $result = $this->$method_name($tpl);
-        }
-        else
-        {
-            $result = $this->onDisplay();
-        }
-
-        if ($result === false)
-        {
-            return;
-        }
-
-        if ($this->doPostRender)
-        {
-            $this->postRender();
-        }
     }
 }

@@ -69,7 +69,7 @@ class PlgContentFlexforms extends JPlugin
         JPluginHelper::importPlugin('flexforms');
 
         // Register helper class
-        JLoader::register('FlexformsHelperLanguage', JPATH_ROOT . "/components/com_flexforms/helpers/language.php");
+        JLoader::register('FlexformsHelpersLanguage', JPATH_ROOT . "/components/com_flexforms/helpers/language.php");
 
         foreach ($matches as $match)
         {

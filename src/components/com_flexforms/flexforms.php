@@ -16,18 +16,20 @@ if (!version_compare(phpversion(), '5.3.0', '>='))
     throw new Exception("Your PHP Version is outdated");
 }
 
-// Load F0F
-include_once JPATH_LIBRARIES . '/f0f/include.php';
-
-if (!defined('F0F_INCLUDED') || !class_exists('F0FForm', true))
-{
-    throw new Exception("F0F not found");
-}
-
 // Load flexform plugins
 JPluginHelper::importPlugin('flexforms');
 
 // Register helper class
-JLoader::register('FlexformsHelperLanguage', JPATH_COMPONENT . "/helpers/language.php");
+JLoader::registerPrefix('Flexforms', JPATH_COMPONENT);
+JLoader::register('FlexformsController', JPATH_COMPONENT . '/controller.php');
 
-F0FDispatcher::getTmpInstance('com_flexforms')->dispatch();
+// Compatibility Layer for Flexforms 1.0
+if (JFactory::getApplication()->input->get('task') === 'submit')
+{
+    JFactory::getApplication()->input->set('task', 'form.submit');
+}
+
+// Execute the task.
+$controller = JControllerLegacy::getInstance('Flexforms');
+$controller->execute(JFactory::getApplication()->input->get('task'));
+$controller->redirect();

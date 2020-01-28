@@ -12,7 +12,7 @@
  *
  * @since  1.0.0
  */
-class FlexformsHelperLanguage
+class FlexformsHelpersLanguage
 {
     /**
      * Load form specific language files

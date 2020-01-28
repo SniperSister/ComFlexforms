@@ -27,6 +27,6 @@ defined('_JEXEC') or die();
     <input type="hidden" name="component" value="com_flexforms" />
     <input type="hidden" name="option" value="com_flexforms" />
     <input type="hidden" name="view" value="form" />
-    <input type="hidden" name="id" value="<?php echo $this->item->flexforms_form_id; ?>" />
+    <input type="hidden" name="id" value="<?php echo $this->item->id; ?>" />
     <?php echo JHtml::_('form.token'); ?>
 </form>

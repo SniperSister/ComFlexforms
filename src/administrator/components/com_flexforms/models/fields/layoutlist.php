@@ -7,22 +7,31 @@
  * @link       http://www.djumla.de
  */
 
-// Protect from unauthorized access
-defined('_JEXEC') or die();
+// No direct access to this file
+defined('_JEXEC') or die;
+
+JFormHelper::loadFieldClass('list');
 
 /**
- * Class FlexformsHelperFileselect
+ * Layoutlist Form Field class for the Flexforms component
  *
- * @since  1.0.0
+ * @since  0.0.1
  */
-class FlexformsHelperFileselect
+class JFormFieldLayoutlist extends JFormFieldList
 {
     /**
-     * list of available layouts
+     * The field type.
      *
-     * @return array
+     * @var  string
      */
-    public static function getLayoutOptions()
+    protected $type = 'Layoutlist';
+
+    /**
+     * Method to get a list of options for a list input.
+     *
+     * @return array  An array of JHtml options.
+     */
+    protected function getOptions()
     {
         // Get the database object and a new query object.
         $db = JFactory::getDbo();
@@ -39,8 +48,10 @@ class FlexformsHelperFileselect
         $db->setQuery($query);
         $templates = $db->loadObjectList('element');
 
-        $options["com.default"]   = JText::_('COM_FLEXFORMS_FORMS_FIELD_LAYOUT_OPTION_COMPONENT');
-        $options["media.default"] = JText::_('COM_FLEXFORMS_FORMS_FIELD_LAYOUT_OPTION_MEDIA');
+        $options = array();
+
+        $options[] = JHtml::_('select.option', 'com.default', JText::_('COM_FLEXFORMS_FORMS_FIELD_LAYOUT_OPTION_COMPONENT'));
+        $options[] = JHtml::_('select.option', 'media.default', JText::_('COM_FLEXFORMS_FORMS_FIELD_LAYOUT_OPTION_MEDIA'));
 
         // Loop on all templates
         if ($templates)
@@ -59,8 +70,10 @@ class FlexformsHelperFileselect
                             // Add an option to the template group
                             $value = "tpl." . $template->element . "." . basename($file, '.php');
                             $text = JText::sprintf('COM_FLEXFORMS_FORMS_FIELD_LAYOUT_OPTION_TEMPLATE', $template->name)
-                                . " - " . basename($file, '.php');
-                            $options[$value] = $text;
+                                . " - "
+                                . basename($file, '.php');
+
+                            $options[] = JHtml::_('select.option', $value, $text);
                         }
                     }
                 }

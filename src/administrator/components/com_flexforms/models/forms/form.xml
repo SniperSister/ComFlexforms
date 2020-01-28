@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form addfieldpath="/administrator/components/com_flexforms/models/fields">
+  <fieldset>
+    <field name="id"
+           type="hidden"
+           readonly="true"
+           class="readonly"
+           default="0"
+    />
+    <field name="title" type="text"
+           class="inputbox"
+           label="COM_FLEXFORMS_FORMS_FIELD_TITLE"
+           required="true"
+           size="50"
+    />
+    <field name="enabled" default="1" type="list" label="COM_FLEXFORMS_FORMS_FIELD_ENABLED"  class="inputbox" size="1">
+      <option value="1">JPUBLISHED</option>
+      <option value="0">JUNPUBLISHED</option>
+    </field>
+    <field name="layout" type="layoutlist"
+           label="COM_FLEXFORMS_FORMS_FIELD_LAYOUT"
+           class="inputbox"
+           required="true"
+    />
+    <field name="form" type="filelist"
+           label="COM_FLEXFORMS_FORMS_FIELD_FORM"
+           class="inputbox"
+           directory="/media/com_flexforms/forms"
+           filter="\.xml$"
+           stripext="true"
+           required="true"
+           hide_default="true"
+    />
+
+    <field name="redirecturl" type="url"
+           class="inputbox"
+           label="COM_FLEXFORMS_FORMS_FIELD_REDIRECTURL"
+    />
+
+    <field type="spacer" name="spacer" hr="true" />
+
+    <field name="owners" type="text"
+           class="inputbox"
+           label="COM_FLEXFORMS_FORMS_FIELD_OWNERS"
+           size="50"
+           showon="send_owner_mail:1"
+    />
+    <field name="send_owner_mail" type="list"
+           class="inputbox"
+           label="COM_FLEXFORMS_FORMS_FIELD_SEND_OWNER_MAIL"
+           required="true"
+    >
+      <option value="0">JNO</option>
+      <option value="1">JYES</option>
+    </field>
+    <field name="owners" type="text"
+           class="inputbox"
+           label="COM_FLEXFORMS_FORMS_FIELD_OWNERS"
+           size="50"
+           showon="send_owner_mail:1"
+    />
+    <field name="owner_subject" type="text"
+           class="inputbox"
+           label="COM_FLEXFORMS_FORMS_FIELD_OWNER_SUBJECT"
+           size="50"
+           showon="send_owner_mail:1"
+    />
+    <field name="owner_mail" type="textarea"
+           label="COM_FLEXFORMS_FORMS_FIELD_OWNER_MAIL"
+           rows="15"
+           cols="60"
+           showon="send_owner_mail:1"
+    />
+    <field name="owner_attachments" type="list"
+           class="inputbox"
+           label="COM_FLEXFORMS_FORMS_FIELD_OWNER_ATTACHMENT"
+           showon="send_owner_mail:1"
+    >
+      <option value="0">JNO</option>
+      <option value="1">JYES</option>
+    </field>
+
+    <field type="spacer" name="spacer1" hr="true" />
+
+    <field name="send_sender_mail" type="list"
+           class="inputbox"
+           label="COM_FLEXFORMS_FORMS_FIELD_SEND_SENDER_MAIL"
+           required="true"
+    >
+      <option value="0">JNO</option>
+      <option value="1">JYES</option>
+    </field>
+    <field name="sender_field" type="text"
+           class="inputbox"
+           label="COM_FLEXFORMS_FORMS_FIELD_SENDER_FIELD"
+           size="50"
+           showon="send_sender_mail:1"
+    />
+    <field name="sender_subject" type="text"
+           class="inputbox"
+           label="COM_FLEXFORMS_FORMS_FIELD_SENDER_SUBJECT"
+           size="50"
+           showon="send_sender_mail:1"
+    />
+    <field name="sender_mail" type="textarea"
+           label="COM_FLEXFORMS_FORMS_FIELD_SENDER_MAIL"
+           rows="15"
+           cols="60"
+           showon="send_sender_mail:1"
+    />
+    <field name="sender_attachments" type="list"
+           class="inputbox"
+           label="COM_FLEXFORMS_FORMS_FIELD_SENDER_ATTACHMENT"
+           showon="send_sender_mail:1"
+    >
+      <option value="0">JNO</option>
+      <option value="1">JYES</option>
+    </field>
+  </fieldset>
+</form>
