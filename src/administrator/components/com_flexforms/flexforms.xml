@@ -28,6 +28,7 @@
     </update>
 
     <files folder="site">
+        <filename>router.php</filename>
         <filename>controller.php</filename>
         <filename>flexforms.php</filename>
         <filename>index.html</filename>
