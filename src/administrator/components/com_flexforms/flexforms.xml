@@ -49,6 +49,7 @@
     <administration>
         <menu>COM_FLEXFORMS_MENU</menu>
         <files folder="admin">
+            <filename>controller.php</filename>
             <filename>flexforms.php</filename>
             <filename>config.xml</filename>
             <filename>access.xml</filename>
