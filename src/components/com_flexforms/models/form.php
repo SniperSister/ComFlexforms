@@ -106,7 +106,7 @@ class FlexformsModelForm extends JModelItem
             throw new Exception("Invalid form returned");
         }
 
-        JEventDispatcher::getInstance()->trigger('onBeforeFlexformsReturnForm', array($form));
+        JEventDispatcher::getInstance()->trigger('onBeforeFlexformsReturnForm', array(&$form, &$item));
 
         return $form;
     }
