@@ -85,16 +85,26 @@ class FlexformsControllerForm extends JControllerLegacy
             $successUrl = base64_decode($inputData['successUrl']);
         }
 
+        $item = $model->getItem();
+
         // Use hardcoded URL for redirect, overwriting everything else
-        if ($model->getItem()->redirecturl)
+        if ($item->redirecturl)
         {
-            $successUrl = $model->getItem()->redirecturl;
+            $successUrl = JText::_($item->redirecturl);
+        }
+
+        $successMessage = JText::_('COM_FLEXFORMS_FORM_SUBMIT_MSG_SENT');
+
+        // Use hardcoded success message
+        if ($item->custommessage)
+        {
+            $successMessage = JText::_($item->custommessage);
         }
 
         // Everything went fine, return
         $this->setRedirect(
             $successUrl,
-            JText::_('COM_FLEXFORMS_FORM_SUBMIT_MSG_SENT'),
+            $successMessage,
             'message'
         );
     }

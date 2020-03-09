@@ -37,6 +37,11 @@
            label="COM_FLEXFORMS_FORMS_FIELD_REDIRECTURL"
     />
 
+    <field name="custommessage" type="text"
+           class="inputbox"
+           label="COM_FLEXFORMS_FORMS_FIELD_CUSTOMMESSAGE"
+    />
+
     <field type="spacer" name="spacer" hr="true" />
 
     <field name="owners" type="text"
