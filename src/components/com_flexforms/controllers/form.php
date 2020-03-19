@@ -32,6 +32,10 @@ class FlexformsControllerForm extends JControllerLegacy
         $input = JFactory::getApplication()->input;
         /** @var FlexformsModelForm $model */
         $model = $this->getModel('Form');
+        $item = $model->getItem();
+
+        // Load form specific language files
+        FlexformsHelpersLanguage::loadFormLanguageFiles($item->form);
 
         $inputData = $input->post->getArray();
         $uploadedFiles = $input->files->getArray();
