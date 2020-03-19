@@ -88,7 +88,7 @@ class PlgContentFlexforms extends JPlugin
             // Load form specific language files
             FlexformsHelpersLanguage::loadFormLanguageFiles($this->item->form);
 
-            JHtml::_('behavior.formvalidation');
+            JHtml::_('behavior.formvalidator');
 
             $tempFilePath = FlexformsHelpersLayout::getLayoutFile($this->item->layout, $this->item->form);
 
