@@ -25,7 +25,7 @@
     <field name="form" type="filelist"
            label="COM_FLEXFORMS_FORMS_FIELD_FORM"
            class="inputbox"
-           directory="/media/com_flexforms/forms"
+           directory="media/com_flexforms/forms"
            filter="\.xml$"
            stripext="true"
            required="true"
