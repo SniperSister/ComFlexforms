@@ -164,6 +164,7 @@ class FlexformsModelForm extends JModelItem
     {
         $item = $this->getItem();
         $dispatcher = JEventDispatcher::getInstance();
+        $language = JFactory::getLanguage();
 
         if (!$item->id)
         {
@@ -206,10 +207,14 @@ class FlexformsModelForm extends JModelItem
                 }
             }
 
-            // Parse text
-            $dispatcher->trigger('onBeforeFlexformsParseOwnerEmailtext', array(&$item, &$form, &$data));
+            // Get mail body and subject and check if they are i18n strings
+            $ownerText = ($language->hasKey($item->owner_mail)) ? JText::_($item->owner_mail) : $item->owner_mail;
+            $ownerSubject = ($language->hasKey($item->owner_subject)) ? JText::_($item->owner_subject) : $item->owner_subject;
 
-            $ownerText = $this->parseMailText($item->owner_mail, $data, $form);
+            // Parse text
+            $dispatcher->trigger('onBeforeFlexformsParseOwnerEmailtext', array(&$item, &$form, &$data, &$ownerText));
+
+            $ownerText = $this->parseMailText($ownerText, $data, $form);
 
             $dispatcher->trigger('onAfterFlexformsParseOwnerEmailtext', array(&$item, &$form, &$data, &$ownerText));
 
@@ -221,7 +226,7 @@ class FlexformsModelForm extends JModelItem
 
             // Apply mail attributes
             $ownerMail->addRecipient($owners);
-            $ownerMail->setSubject($item->owner_subject);
+            $ownerMail->setSubject($ownerSubject);
             $ownerMail->setBody($ownerText);
             $ownerMail->isHtml(false);
         }
@@ -255,12 +260,16 @@ class FlexformsModelForm extends JModelItem
                 throw new Exception("Invalid sender addresses");
             }
 
+            // Get mail body and subject and check if they are i18n strings
+            $senderText = ($language->hasKey($item->sender_mail)) ? JText::_($item->sender_mail) : $item->sender_mail;
+            $senderSubject = ($language->hasKey($item->sender_subject)) ? JText::_($item->sender_subject) : $item->sender_subject;
+
             // Parse text
-            $dispatcher->trigger('onBeforeFlexformsParseSenderEmailtext', array(&$item, &$form, &$data));
+            $dispatcher->trigger('onBeforeFlexformsParseSenderEmailtext', array(&$item, &$form, &$data, &$senderText));
 
-            $senderText = $this->parseMailText($item->sender_mail, $data, $form);
+            $senderText = $this->parseMailText($senderText, $data, $form);
 
-            $dispatcher->trigger('onAfterFlexformsParseSenderEmailtext', array(&$item, &$form, &$data, $senderText));
+            $dispatcher->trigger('onAfterFlexformsParseSenderEmailtext', array(&$item, &$form, &$data, &$senderText));
 
             // Attach uploaded files
             if ($item->sender_attachments)
@@ -270,7 +279,7 @@ class FlexformsModelForm extends JModelItem
 
             // Apply mail attributes
             $senderMail->addRecipient($data[$item->sender_field]);
-            $senderMail->setSubject($item->sender_subject);
+            $senderMail->setSubject($senderSubject);
             $senderMail->setBody($senderText);
             $senderMail->isHtml(false);
         }
