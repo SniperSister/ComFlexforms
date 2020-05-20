@@ -35,7 +35,7 @@ class PlgContentFlexforms extends JPlugin
         // Don't run this plugin when the content is being indexed
         if ($context == 'com_finder.indexer')
         {
-            return true;
+            $article->text = preg_replace('/{flexform (\\d*)}/', '', $article->text);
         }
 
         // Simple performance check to determine whether bot should process further
