@@ -102,20 +102,12 @@ class FlexformsViewForm extends JViewLegacy
 
         $this->document->setTitle($title);
 
-        if ($this->item->metadesc)
-        {
-            $this->document->setDescription($this->item->metadesc);
-        }
-        elseif ($this->params->get('menu-meta_description'))
+        if ($this->params->get('menu-meta_description'))
         {
             $this->document->setDescription($this->params->get('menu-meta_description'));
         }
 
-        if ($this->item->metakey)
-        {
-            $this->document->setMetadata('keywords', $this->item->metakey);
-        }
-        elseif ($this->params->get('menu-meta_keywords'))
+        if ($this->params->get('menu-meta_keywords'))
         {
             $this->document->setMetadata('keywords', $this->params->get('menu-meta_keywords'));
         }
