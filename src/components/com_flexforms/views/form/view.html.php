@@ -25,11 +25,14 @@ class FlexformsViewForm extends JViewLegacy
      */
     public function display($tpl = null)
     {
+        $app    = JFactory::getApplication();
+        $this->params = $app->getParams();
+
         jimport("joomla.filesystem.file");
 
         $model = $this->getModel();
-        $this->assign('item', $model->getItem());
-        $this->assign('form', $model->getFormDefinition($this->item->id));
+        $this->item = $model->getItem();
+        $this->form = $model->getFormDefinition($this->item->id);
 
         // Generate submit route - use a plain index.php if the component is called from the plugin
         $route = JRoute::_('index.php');
@@ -39,7 +42,7 @@ class FlexformsViewForm extends JViewLegacy
             $route = JURI::base() . 'index.php';
         }
 
-        $this->assign('route', $route);
+        $this->route = $route;
 
         // Load form specific language files
         FlexformsHelpersLanguage::loadFormLanguageFiles($this->item->form);
@@ -50,6 +53,8 @@ class FlexformsViewForm extends JViewLegacy
 
         unset($model);
         unset($tpl);
+
+        $this->prepareDocument();
 
         // Start capturing output into a buffer
         ob_start();
@@ -64,5 +69,60 @@ class FlexformsViewForm extends JViewLegacy
         echo $this->_output;
 
         return true;
+    }
+
+    /**
+     * Prepares the document.
+     *
+     * @return  void
+     */
+    protected function prepareDocument()
+    {
+        $app   = JFactory::getApplication();
+        $title = $this->params->get('page_title', '');
+
+        // Check for empty title and add site name if param is set
+        if (empty($title))
+        {
+            $title = $app->get('sitename');
+        }
+        elseif ($app->get('sitename_pagetitles', 0) == 1)
+        {
+            $title = JText::sprintf('JPAGETITLE', $app->get('sitename'), $title);
+        }
+        elseif ($app->get('sitename_pagetitles', 0) == 2)
+        {
+            $title = JText::sprintf('JPAGETITLE', $title, $app->get('sitename'));
+        }
+
+        if (empty($title))
+        {
+            $title = $this->item->title;
+        }
+
+        $this->document->setTitle($title);
+
+        if ($this->item->metadesc)
+        {
+            $this->document->setDescription($this->item->metadesc);
+        }
+        elseif ($this->params->get('menu-meta_description'))
+        {
+            $this->document->setDescription($this->params->get('menu-meta_description'));
+        }
+
+        if ($this->item->metakey)
+        {
+            $this->document->setMetadata('keywords', $this->item->metakey);
+        }
+        elseif ($this->params->get('menu-meta_keywords'))
+        {
+            $this->document->setMetadata('keywords', $this->params->get('menu-meta_keywords'));
+        }
+
+        if ($this->params->get('robots'))
+        {
+            $this->document->setMetadata('robots', $this->params->get('robots'));
+        }
     }
 }
