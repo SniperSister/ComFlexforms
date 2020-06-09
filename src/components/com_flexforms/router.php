@@ -12,95 +12,30 @@ defined('_JEXEC') or die;
 
 JLoader::registerPrefix('Flexforms', JPATH_SITE . '/components/com_flexforms/');
 
+use \Joomla\CMS\Component\Router\RouterViewConfiguration;
+use Joomla\CMS\Component\Router\Rules\MenuRules;
+use Joomla\CMS\Component\Router\Rules\StandardRules;
+use Joomla\CMS\Component\Router\Rules\NomenuRules;
+use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Menu\AbstractMenu;
+
 /**
  * Class FlexformsRouter
  *
  * @since  3.3
  */
-class FlexformsRouter extends JComponentRouterBase
+class FlexformsRouter extends Joomla\CMS\Component\Router\RouterView
 {
-    /**
-     * Build method for URLs
-     * This method is meant to transform the query parameters into a more human
-     * readable form. It is only executed when SEF mode is switched on.
-     *
-     * @param   array  &$query  An array of URL arguments
-     *
-     * @return  array  The URL arguments to use to assemble the subsequent URL.
-     *
-     * @since   3.3
-     */
-    public function build(&$query)
+    public function __construct(CMSApplication $app = null, AbstractMenu $menu = null)
     {
-        $segments = array();
-        $view     = null;
+        $form = new RouterViewConfiguration('form');
+        $form->setKey('id');
+        $this->registerView($form);
 
-        if (isset($query['task']))
-        {
-            $taskParts  = explode('.', $query['task']);
-            $segments[] = implode('/', $taskParts);
-            $view       = $taskParts[0];
-            unset($query['task']);
-        }
+        parent::__construct($app, $menu);
 
-        if (isset($query['view']))
-        {
-            $segments[] = $query['view'];
-            $view = $query['view'];
-
-            unset($query['view']);
-        }
-
-        if (isset($query['id']))
-        {
-            if ($view !== null)
-            {
-                $segments[] = $query['id'];
-            }
-            else
-            {
-                $segments[] = $query['id'];
-            }
-
-            unset($query['id']);
-        }
-
-        return $segments;
-    }
-
-    /**
-     * Parse method for URLs
-     * This method is meant to transform the human readable URL back into
-     * query parameters. It is only executed when SEF mode is switched on.
-     *
-     * @param   array  &$segments  The segments of the URL to parse.
-     *
-     * @return  array  The URL attributes to be used by the application.
-     *
-     * @since   3.3
-     */
-    public function parse(&$segments)
-    {
-        $vars = array();
-
-        // View is always the first element of the array
-        $vars['view'] = array_shift($segments);
-
-        while (!empty($segments))
-        {
-            $segment = array_pop($segments);
-
-            // If it's the ID, let's put on the request
-            if (is_numeric($segment))
-            {
-                $vars['id'] = $segment;
-            }
-            else
-            {
-                $vars['task'] = $vars['view'] . '.' . $segment;
-            }
-        }
-
-        return $vars;
+        $this->attachRule(new MenuRules($this));
+        $this->attachRule(new StandardRules($this));
+        $this->attachRule(new NomenuRules($this));
     }
 }
