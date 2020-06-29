@@ -289,12 +289,14 @@ class FlexformsModelForm extends JModelItem
         {
             $dispatcher->trigger('onBeforeFlexformsSendOwnerMail', array(&$item, &$form, &$data, &$ownerMail));
             $ownerMail->Send();
+            $dispatcher->trigger('onAfterFlexformsSendOwnerMail', array(&$item, &$form, &$data, &$ownerMail));
         }
 
         if (!empty($senderMail))
         {
             $dispatcher->trigger('onBeforeFlexformsSendSenderMail', array(&$item, &$form, &$data, &$senderMail));
             $senderMail->Send();
+            $dispatcher->trigger('onAfterFlexformsSendSenderMail', array(&$item, &$form, &$data, &$senderMail));
         }
 
         // Trigger "after submit" event
