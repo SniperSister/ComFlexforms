@@ -38,4 +38,30 @@ class FlexformsRouter extends Joomla\CMS\Component\Router\RouterView
         $this->attachRule(new StandardRules($this));
         $this->attachRule(new NomenuRules($this));
     }
+
+    /**
+     * Method to get the segment(s) for a form
+     *
+     * @param   string  $id       Segment of the form to retrieve the ID for
+     * @param   array   $query    The request that is parsed right now
+     *
+     * @return  mixed   The id of this item or false
+     */
+    public function getFormSegment($id, $query)
+    {
+        return array((int) $id => $id);
+    }
+
+    /**
+     * Method to get the segment(s) for a form
+     *
+     * @param   string  $segment  ID of the form to retrieve the ID for
+     * @param   array   $query    The request that is parsed right now
+     *
+     * @return  mixed   The id of this item or false
+     */
+    public function getFormId($segment, $query)
+    {
+        return (int) $segment;
+    }
 }
