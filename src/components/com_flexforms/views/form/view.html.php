@@ -34,6 +34,10 @@ class FlexformsViewForm extends JViewLegacy
         $this->item = $model->getItem();
         $this->form = $model->getFormDefinition($this->item->id);
 
+        // Restore saved form data
+        $data = (array) JFactory::getApplication()->getUserState('com_flexforms.form.' . $this->item->form . '.data', array());
+        $this->form->bind($data);
+
         // Generate submit route - use a plain index.php if the component is called from the plugin
         $route = JRoute::_('index.php');
 

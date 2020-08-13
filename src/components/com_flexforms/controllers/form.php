@@ -29,7 +29,9 @@ class FlexformsControllerForm extends JControllerLegacy
     {
         $this->checkToken();
 
-        $input = JFactory::getApplication()->input;
+        $app = JFactory::getApplication();
+        $input = $app->input;
+
         /** @var FlexformsModelForm $model */
         $model = $this->getModel('Form');
         $item = $model->getItem();
@@ -45,6 +47,9 @@ class FlexformsControllerForm extends JControllerLegacy
         {
             $inputData[$field] = $file['name'];
         }
+
+        // Store user input into session so we are able to restore data after redirect
+        $app->setUserState('com_flexforms.form.' . $item->form . '.data', $inputData);
 
         // Validate user input before starting the send process
         if (!$model->validateUserForm($inputData))
@@ -80,6 +85,9 @@ class FlexformsControllerForm extends JControllerLegacy
 
             return;
         }
+
+        // Successful submission, reset saved data
+        $app->setUserState('com_flexforms.form.' . $item->form . '.data', null);
 
         // Use provided URL for redirect to success page
         $successUrl = JRoute::_('index.php?option=com_flexforms&view=form&id=' . (int) $input->post->get('id'), false);
