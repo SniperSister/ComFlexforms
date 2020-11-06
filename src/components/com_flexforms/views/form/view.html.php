@@ -51,7 +51,11 @@ class FlexformsViewForm extends JViewLegacy
         // Load form specific language files
         FlexformsHelpersLanguage::loadFormLanguageFiles($this->item->form);
 
-        JHtml::_('behavior.formvalidation');
+        // Enable js-based frontend validation
+        if ($this->item->jsvalidation)
+        {
+            JHtml::_('behavior.formvalidation');
+        }
 
         $this->_tempFilePath = FlexformsHelpersLayout::getLayoutFile($this->item->layout, $this->item->form);
 

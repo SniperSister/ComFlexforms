@@ -54,6 +54,7 @@ JHtml::_('behavior.keepalive');
                     <?php echo $this->form->renderField('form'); ?>
                     <?php echo $this->form->renderField('redirecturl'); ?>
                     <?php echo $this->form->renderField('custommessage'); ?>
+                    <?php echo $this->form->renderField('jsvalidation'); ?>
                     <?php echo $this->form->renderField('spacer'); ?>
                     <?php echo $this->form->renderField('send_owner_mail'); ?>
                     <?php echo $this->form->renderField('owners'); ?>

@@ -42,6 +42,15 @@
            label="COM_FLEXFORMS_FORMS_FIELD_CUSTOMMESSAGE"
     />
 
+    <field name="jsvalidation" type="list"
+           class="inputbox"
+           label="COM_FLEXFORMS_FORMS_FIELD_JSVALIDATION"
+           default="1"
+    >
+      <option value="0">JNO</option>
+      <option value="1">JYES</option>
+    </field>
+
     <field type="spacer" name="spacer" hr="true" />
 
     <field name="owners" type="text"
