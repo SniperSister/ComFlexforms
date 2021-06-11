@@ -215,6 +215,7 @@ class FlexformsModelForm extends JModelItem
             $dispatcher->trigger('onBeforeFlexformsParseOwnerEmailtext', array(&$item, &$form, &$data, &$ownerText));
 
             $ownerText = $this->parseMailText($ownerText, $data, $form);
+            $ownerSubject = $this->parseMailText($ownerSubject, $data, $form);
 
             $dispatcher->trigger('onAfterFlexformsParseOwnerEmailtext', array(&$item, &$form, &$data, &$ownerText));
 
@@ -268,6 +269,7 @@ class FlexformsModelForm extends JModelItem
             $dispatcher->trigger('onBeforeFlexformsParseSenderEmailtext', array(&$item, &$form, &$data, &$senderText));
 
             $senderText = $this->parseMailText($senderText, $data, $form);
+            $senderSubject = $this->parseMailText($senderSubject, $data, $form);
 
             $dispatcher->trigger('onAfterFlexformsParseSenderEmailtext', array(&$item, &$form, &$data, &$senderText));
 
