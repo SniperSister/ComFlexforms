@@ -81,6 +81,7 @@
     />
     <field name="owner_mail" type="textarea"
            label="COM_FLEXFORMS_FORMS_FIELD_OWNER_MAIL"
+           filter="raw"
            rows="15"
            cols="60"
            showon="send_owner_mail:1"
@@ -118,6 +119,7 @@
     />
     <field name="sender_mail" type="textarea"
            label="COM_FLEXFORMS_FORMS_FIELD_SENDER_MAIL"
+           filter="raw"
            rows="15"
            cols="60"
            showon="send_sender_mail:1"
