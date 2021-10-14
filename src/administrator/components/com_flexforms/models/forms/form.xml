@@ -26,7 +26,7 @@
            label="COM_FLEXFORMS_FORMS_FIELD_FORM"
            class="inputbox"
            directory="media/com_flexforms/forms"
-           filter="\.xml$"
+           fileFilter="\.xml$"
            stripext="true"
            required="true"
            hide_default="true"

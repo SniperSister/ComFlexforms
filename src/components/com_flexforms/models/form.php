@@ -106,7 +106,7 @@ class FlexformsModelForm extends JModelItem
             throw new Exception("Invalid form returned");
         }
 
-        JEventDispatcher::getInstance()->trigger('onBeforeFlexformsReturnForm', array(&$form, &$item));
+        Factory::getApplication()->triggerEvent('onBeforeFlexformsReturnForm', array(&$form, &$item));
 
         return $form;
     }
@@ -123,7 +123,6 @@ class FlexformsModelForm extends JModelItem
     public function validateUserForm($data)
     {
         $item = $this->getItem();
-        $dispatcher = JEventDispatcher::getInstance();
 
         if (!$item->id)
         {
@@ -132,11 +131,11 @@ class FlexformsModelForm extends JModelItem
 
         $form = $this->getFormDefinition();
 
-        $dispatcher->trigger('onBeforeFlexformsValidate', array(&$item, &$form, &$data));
+        Factory::getApplication()->triggerEvent('onBeforeFlexformsValidate', array(&$item, &$form, &$data));
 
         $result = $form->validate($data);
 
-        $dispatcher->trigger('onAfterFlexformsValidate', array(&$item, &$form, &$data, &$result));
+        Factory::getApplication()->triggerEvent('onAfterFlexformsValidate', array(&$item, &$form, &$data, &$result));
 
         // Append error messages
         if ( ! $result)
@@ -163,7 +162,6 @@ class FlexformsModelForm extends JModelItem
     public function submit($data, $files)
     {
         $item = $this->getItem();
-        $dispatcher = JEventDispatcher::getInstance();
         $language = JFactory::getLanguage();
 
         if (!$item->id)
@@ -176,7 +174,7 @@ class FlexformsModelForm extends JModelItem
 
         $form = $this->getFormDefinition();
 
-        $dispatcher->trigger('onBeforeFlexformsSubmit', array(&$item, &$form, &$data));
+        Factory::getApplication()->triggerEvent('onBeforeFlexformsSubmit', array(&$item, &$form, &$data));
 
         // Prepare owner mail
         if ($item->send_owner_mail == 1)
@@ -212,12 +210,12 @@ class FlexformsModelForm extends JModelItem
             $ownerSubject = ($language->hasKey($item->owner_subject)) ? JText::_($item->owner_subject) : $item->owner_subject;
 
             // Parse text
-            $dispatcher->trigger('onBeforeFlexformsParseOwnerEmailtext', array(&$item, &$form, &$data, &$ownerText));
+            Factory::getApplication()->triggerEvent('onBeforeFlexformsParseOwnerEmailtext', array(&$item, &$form, &$data, &$ownerText));
 
             $ownerText = $this->parseMailText($ownerText, $data, $form);
             $ownerSubject = $this->parseMailText($ownerSubject, $data, $form);
 
-            $dispatcher->trigger('onAfterFlexformsParseOwnerEmailtext', array(&$item, &$form, &$data, &$ownerText));
+            Factory::getApplication()->triggerEvent('onAfterFlexformsParseOwnerEmailtext', array(&$item, &$form, &$data, &$ownerText));
 
             // Attach uploaded files
             if ($item->owner_attachments)
@@ -266,12 +264,12 @@ class FlexformsModelForm extends JModelItem
             $senderSubject = ($language->hasKey($item->sender_subject)) ? JText::_($item->sender_subject) : $item->sender_subject;
 
             // Parse text
-            $dispatcher->trigger('onBeforeFlexformsParseSenderEmailtext', array(&$item, &$form, &$data, &$senderText));
+            Factory::getApplication()->triggerEvent('onBeforeFlexformsParseSenderEmailtext', array(&$item, &$form, &$data, &$senderText));
 
             $senderText = $this->parseMailText($senderText, $data, $form);
             $senderSubject = $this->parseMailText($senderSubject, $data, $form);
 
-            $dispatcher->trigger('onAfterFlexformsParseSenderEmailtext', array(&$item, &$form, &$data, &$senderText));
+            Factory::getApplication()->triggerEvent('onAfterFlexformsParseSenderEmailtext', array(&$item, &$form, &$data, &$senderText));
 
             // Attach uploaded files
             if ($item->sender_attachments)
@@ -289,20 +287,20 @@ class FlexformsModelForm extends JModelItem
         // Everything seems to be fine, send mails
         if (!empty($ownerMail))
         {
-            $dispatcher->trigger('onBeforeFlexformsSendOwnerMail', array(&$item, &$form, &$data, &$ownerMail));
+            Factory::getApplication()->triggerEvent('onBeforeFlexformsSendOwnerMail', array(&$item, &$form, &$data, &$ownerMail));
             $ownerMail->Send();
-            $dispatcher->trigger('onAfterFlexformsSendOwnerMail', array(&$item, &$form, &$data, &$ownerMail));
+            Factory::getApplication()->triggerEvent('onAfterFlexformsSendOwnerMail', array(&$item, &$form, &$data, &$ownerMail));
         }
 
         if (!empty($senderMail))
         {
-            $dispatcher->trigger('onBeforeFlexformsSendSenderMail', array(&$item, &$form, &$data, &$senderMail));
+            Factory::getApplication()->triggerEvent('onBeforeFlexformsSendSenderMail', array(&$item, &$form, &$data, &$senderMail));
             $senderMail->Send();
-            $dispatcher->trigger('onAfterFlexformsSendSenderMail', array(&$item, &$form, &$data, &$senderMail));
+            Factory::getApplication()->triggerEvent('onAfterFlexformsSendSenderMail', array(&$item, &$form, &$data, &$senderMail));
         }
 
         // Trigger "after submit" event
-        $dispatcher->trigger('onAfterFlexformsSubmit', array(&$item, &$form, &$data));
+        Factory::getApplication()->triggerEvent('onAfterFlexformsSubmit', array(&$item, &$form, &$data));
 
         return true;
     }
@@ -352,7 +350,7 @@ class FlexformsModelForm extends JModelItem
      */
     protected function attachFiles(array $files, JMail &$mail)
     {
-        JEventDispatcher::getInstance()->trigger('onBeforeFlexformsAddAttachments', array(&$files));
+        Factory::getApplication()->triggerEvent('onBeforeFlexformsAddAttachments', array(&$files));
 
         if (count($files))
         {

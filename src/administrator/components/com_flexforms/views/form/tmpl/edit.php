@@ -10,42 +10,19 @@
 // No direct access
 defined('_JEXEC') or die;
 
-JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
-JHtml::_('behavior.tooltip');
-JHtml::_('behavior.formvalidation');
-JHtml::_('formbehavior.chosen', 'select');
-JHtml::_('behavior.keepalive');
+/** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
+$wa = $this->document->getWebAssetManager();
+$wa->useScript('keepalive')
+    ->useScript('form.validate');
+
 ?>
-<script type="text/javascript">
-    js = jQuery.noConflict();
-    js(document).ready(function () {
-
-    });
-
-    Joomla.submitbutton = function (task) {
-        if (task == 'form.cancel') {
-            Joomla.submitform(task, document.getElementById('form-form'));
-        }
-        else {
-
-            if (task != 'form.cancel' && document.formvalidator.isValid(document.id('form-form'))) {
-
-                Joomla.submitform(task, document.getElementById('form-form'));
-            }
-            else {
-                alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED')); ?>');
-            }
-        }
-    }
-</script>
-
 <form
     action="<?php echo JRoute::_('index.php?option=com_flexforms&layout=edit&id=' . (int) $this->item->id); ?>"
     method="post" enctype="multipart/form-data" name="adminForm" id="form-form" class="form-validate">
 
-    <div class="form-horizontal">
-        <div class="row-fluid">
-            <div class="span10 form-horizontal">
+    <div class="main-card">
+        <div class="row">
+            <div class="col-12 col-lg-10">
                 <fieldset class="adminform">
                     <input type="hidden" name="jform[id]" value="<?php echo $this->item->id; ?>" />
                     <?php echo $this->form->renderField('title'); ?>

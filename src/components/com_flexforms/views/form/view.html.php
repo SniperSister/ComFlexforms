@@ -54,7 +54,10 @@ class FlexformsViewForm extends JViewLegacy
         // Enable js-based frontend validation
         if ($this->item->jsvalidation)
         {
-            JHtml::_('behavior.formvalidation');
+            /** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
+            $wa = $this->document->getWebAssetManager();
+            $wa->useScript('keepalive')
+                ->useScript('form.validate');
         }
 
         $this->_tempFilePath = FlexformsHelpersLayout::getLayoutFile($this->item->layout, $this->item->form);

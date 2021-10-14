@@ -8,6 +8,8 @@
  */
 
 // No direct access
+use Joomla\CMS\Application\ApplicationHelper;
+
 defined('_JEXEC') or die;
 
 /**
@@ -69,5 +71,34 @@ class FlexformsTableForm extends JTable
         }
 
         return parent::bind($array, $ignore);
+    }
+
+    /**
+     * Overloaded check method to ensure data integrity.
+     *
+     * @return  boolean  True on success.
+     */
+    public function check()
+    {
+        try
+        {
+            parent::check();
+        }
+        catch (\Exception $e)
+        {
+            $this->setError($e->getMessage());
+
+            return false;
+        }
+
+
+        if (empty($this->slug))
+        {
+            $this->slug = $this->title;
+        }
+
+        $this->slug = ApplicationHelper::stringURLSafe($this->slug);
+
+        return true;
     }
 }
