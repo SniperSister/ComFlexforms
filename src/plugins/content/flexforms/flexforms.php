@@ -91,7 +91,10 @@ class PlgContentFlexforms extends JPlugin
             // Enable js-based frontend validation
             if ($this->item->jsvalidation)
             {
-                JHtml::_('behavior.formvalidator');
+                /** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
+                $wa = \Joomla\CMS\Factory::getDocument()->getWebAssetManager();
+                $wa->useScript('keepalive')
+                    ->useScript('form.validate');
             }
 
             $tempFilePath = FlexformsHelpersLayout::getLayoutFile($this->item->layout, $this->item->form);
