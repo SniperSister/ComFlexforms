@@ -24,7 +24,7 @@ $canOrder  = $user->authorise('core.edit.state', 'com_flexforms');
 $sortFields = $this->getSortFields();
 ?>
 
-<form action="<?php echo JRoute::_('index.php?option=com_flexforms&view=form'); ?>" method="post"
+<form action="<?php echo JRoute::_('index.php?option=com_flexforms&view=forms'); ?>" method="post"
       name="adminForm" id="adminForm">
     <?php if (!empty($this->sidebar)): ?>
         <div id="j-sidebar-container" class="span2">
@@ -75,7 +75,7 @@ $sortFields = $this->getSortFields();
                         <td class="hidden-phone">
                             <?php echo JHtml::_('grid.id', $i, $item->id); ?>
                         </td>
-                        <?php if (isset($this->items[0]->state)): ?>
+                        <?php if (isset($this->items[0]->enabled)): ?>
                             <td class="center">
                                 <?php echo JHtml::_('jgrid.published', $item->enabled, $i, 'forms.', $canChange, 'cb'); ?>
                             </td>
