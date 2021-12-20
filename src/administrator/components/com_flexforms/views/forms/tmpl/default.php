@@ -43,7 +43,7 @@ $sortFields = $this->getSortFields();
                         <input type="checkbox" name="checkall-toggle" value=""
                                title="<?php echo JText::_('JGLOBAL_CHECK_ALL'); ?>" onclick="Joomla.checkAll(this)"/>
                     </th>
-                    <?php if (isset($this->items[0]->state)): ?>
+                    <?php if (isset($this->items[0]->enabled)): ?>
                         <th width="1%" class="nowrap center">
                                 <?php echo JHtml::_('searchtools.sort', 'JSTATUS', 'a.`enabled`', $listDirn, $listOrder); ?>
                         </th>
