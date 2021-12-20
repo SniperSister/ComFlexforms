@@ -36,7 +36,7 @@ class FlexformsModelForms extends JModelList
                 'title', 'a.`title`',
                 'image', 'a.`image`',
                 'text', 'a.`text`',
-                'state', 'a.`state`',
+                'enabled', 'a.`enabled`',
                 'created_by', 'a.`created_by`',
                 'modified_by', 'a.`modified_by`',
             );
@@ -92,7 +92,7 @@ class FlexformsModelForms extends JModelList
     {
         // Compile the store id.
         $id .= ':' . $this->getState('filter.search');
-        $id .= ':' . $this->getState('filter.state');
+        $id .= ':' . $this->getState('filter.enabled');
 
         return parent::getStoreId($id);
     }
@@ -135,11 +135,11 @@ class FlexformsModelForms extends JModelList
 
         if (is_numeric($published))
         {
-            $query->where('a.state = ' . (int) $published);
+            $query->where('a.enabled = ' . (int) $published);
         }
         elseif ($published === '')
         {
-            $query->where('(a.state IN (0, 1))');
+            $query->where('(a.enabled IN (0, 1))');
         }
 
         // Filter by search in title

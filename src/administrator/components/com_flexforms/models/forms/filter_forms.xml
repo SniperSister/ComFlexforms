@@ -4,7 +4,7 @@
         <field name="search" type="text" hint="COM_FLEXFORMS_SEARCH"
                class="js-stools-search-string" />
 
-        <field name="state"
+        <field name="enabled"
                type="status"
                label="COM_FLEXFORMS_FORMS_FIELD_ENABLED"
                onchange="this.form.submit();"
@@ -26,8 +26,8 @@
             <option value="a.`id` DESC">ID Descending</option>
             <option value="a.`title` ASC">Title Ascending</option>
             <option value="a.`title` DESC">Title Descending</option>
-            <option value="a.`state` ASC">State Ascending</option>
-            <option value="a.`state` DESC">State Descending</option>
+            <option value="a.`enabled` ASC">State Ascending</option>
+            <option value="a.`enabled` DESC">State Descending</option>
 
         </field>
 
