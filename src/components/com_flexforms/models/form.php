@@ -356,6 +356,11 @@ class FlexformsModelForm extends JModelItem
         {
             foreach ($files as $file)
             {
+                if (!$file['tmp_name'])
+                {
+                    continue;
+                }
+
                 $mail->addAttachment($file['tmp_name'], $file['name']);
             }
         }
