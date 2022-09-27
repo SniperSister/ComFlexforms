@@ -51,14 +51,17 @@ class FlexformsViewForm extends JViewLegacy
         // Load form specific language files
         FlexformsHelpersLanguage::loadFormLanguageFiles($this->item->form);
 
+        /** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
+        $wa = $this->document->getWebAssetManager();
+
         // Enable js-based frontend validation
         if ($this->item->jsvalidation)
         {
-            /** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
-            $wa = $this->document->getWebAssetManager();
-            $wa->useScript('keepalive')
-                ->useScript('form.validate');
+            $wa->useScript('form.validate');
         }
+
+        $wa->useScript('keepalive');
+        $wa->useScript('showon');
 
         $this->_tempFilePath = FlexformsHelpersLayout::getLayoutFile($this->item->layout, $this->item->form);
 
