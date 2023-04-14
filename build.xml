@@ -69,13 +69,9 @@
 
         <echo msg="Copying admin language folder" />
         <copy todir="./build/com/admin/language">
-            <fileset dir="./src/administrator/language/de-DE">
-                <exclude name="de-DE.plg_content_flexforms.ini"/>
-                <exclude name="de-DE.plg_content_flexforms.sys.ini"/>
-            </fileset>
-            <fileset dir="./src/administrator/language/en-GB">
-                <exclude name="en-GB.plg_content_flexforms.ini"/>
-                <exclude name="en-GB.plg_content_flexforms.sys.ini"/>
+            <fileset dir="./src/administrator/language">
+                <exclude name="plg_content_flexforms.ini"/>
+                <exclude name="plg_content_flexforms.sys.ini"/>
             </fileset>
             <filterchain>
                 <replacetokens begintoken="%%" endtoken="%%">
@@ -86,9 +82,7 @@
 
         <echo msg="Copying site language folder" />
         <copy todir="./build/com/site/language">
-            <fileset dir="./src/language/de-DE">
-            </fileset>
-            <fileset dir="./src/language/en-GB">
+            <fileset dir="./src/language">
             </fileset>
             <filterchain>
                 <replacetokens begintoken="%%" endtoken="%%">
@@ -120,13 +114,9 @@
 
         <echo msg="Copying plugin language files" />
         <copy todir="./build/plg/language">
-            <fileset dir="./src/administrator/language/de-DE">
-                <exclude name="de-DE.com_flexforms.ini"/>
-                <exclude name="de-DE.com_flexforms.sys.ini"/>
-            </fileset>
-            <fileset dir="./src/administrator/language/en-GB">
-                <exclude name="en-GB.com_flexforms.ini"/>
-                <exclude name="en-GB.com_flexforms.sys.ini"/>
+            <fileset dir="./src/administrator/language">
+                <exclude name="com_flexforms.ini"/>
+                <exclude name="com_flexforms.sys.ini"/>
             </fileset>
             <filterchain>
                 <replacetokens begintoken="%%" endtoken="%%">

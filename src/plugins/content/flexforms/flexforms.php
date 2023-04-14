@@ -9,12 +9,20 @@
 
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Plugin\CMSPlugin;
+use Djumla\Component\Flexforms\Site\Helper\LanguageHelper;
+use Djumla\Component\Flexforms\Site\Helper\LayoutHelper;
+use Joomla\CMS\Application\SiteApplication;
+
 /**
  * Class PlgContentFlexforms
  *
  * @since  1.0.0
  */
-class PlgContentFlexforms extends JPlugin
+class PlgContentFlexforms extends CMSPlugin
 {
     /**
      * Plugin that loads a form within content
@@ -33,14 +41,12 @@ class PlgContentFlexforms extends JPlugin
     public function onContentPrepare($context, &$article, &$params, $page = 0)
     {
         // Don't run this plugin when the content is being indexed
-        if ($context == 'com_finder.indexer')
-        {
+        if ($context === 'com_finder.indexer') {
             $article->text = preg_replace('/{flexform (\\d*)}/', '', $article->text);
         }
 
         // Simple performance check to determine whether bot should process further
-        if (strpos($article->text, 'flexform') === false)
-        {
+        if (strpos($article->text, 'flexform') === false) {
             return true;
         }
 
@@ -52,55 +58,50 @@ class PlgContentFlexforms extends JPlugin
         preg_match_all($regex, $article->text, $matches, PREG_SET_ORDER, 0);
 
         // No matches found, skip
-        if (!$matches)
-        {
+        if (!$matches) {
             return false;
         }
 
+        if (!$this->getApplication() instanceof SiteApplication) {
+            return true;
+        }
+
         // Load flexform plugins
-        JPluginHelper::importPlugin('flexforms');
+        PluginHelper::importPlugin('flexforms');
 
-        // Load language helper
-        JLoader::registerPrefix('Flexforms', JPATH_SITE . "/components/com_flexforms");
-
-        jimport("joomla.filesystem.file");
-
-        foreach ($matches as $match)
-        {
-            // Load model
-            JModelLegacy::addIncludePath(JPATH_SITE . "/components/com_flexforms/models");
-            $model = JModelLegacy::getInstance('Form', 'FlexformsModel');
+        foreach ($matches as $match) {
+            /** @var \Djumla\Component\Flexforms\Site\Model\FormModel $model */
+            $model = $this->getApplication()->bootComponent('com_flexforms')
+                ->getMVCFactory()
+                ->createModel('Form', 'Site');
 
             // Load data
             $this->item = $model->getItem($match[1]);
             $this->form = $model->getFormDefinition($this->item->id);
 
             // Generate submit route - use a plain index.php if the component is called from the plugin
-            $route = JRoute::_('index.php');
+            $route = Route::_('index.php');
 
-            if (!JFactory::getApplication()->input->get('option', 'com_flexforms') !== "com_flexforms")
-            {
-                $route = JURI::base() . 'index.php';
+            if (!Factory::getApplication()->input->get('option', 'com_flexforms') !== "com_flexforms") {
+                $route = \Joomla\CMS\Uri\Uri::base() . 'index.php';
             }
 
             $this->route = $route;
 
             // Load form specific language files
-            FlexformsHelpersLanguage::loadFormLanguageFiles($this->item->form);
+            LanguageHelper::loadFormLanguageFiles($this->item->form);
 
             // Enable js-based frontend validation
-            if ($this->item->jsvalidation)
-            {
+            if ($this->item->jsvalidation) {
                 /** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
                 $wa = \Joomla\CMS\Factory::getDocument()->getWebAssetManager();
                 $wa->useScript('keepalive')
                     ->useScript('form.validate');
             }
 
-            $tempFilePath = FlexformsHelpersLayout::getLayoutFile($this->item->layout, $this->item->form);
+            $tempFilePath = LayoutHelper::getLayoutFile($this->item->layout, $this->item->form);
 
-            unset($model);
-            unset($tpl);
+            unset($model, $tpl);
 
             // Start capturing output into a buffer
             ob_start();

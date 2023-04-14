@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="4.0" method="upgrade" >
-    <name>Flexforms</name>
+    <name>COM_FLEXFORMS</name>
     <author>David Jardin</author>
     <creationDate>%%CURRENTDATE%%</creationDate>
     <copyright>(C) David Jardin - djumla. All rights reserved.</copyright>
     <license>GNU General Public License version 3 or later; see LICENSE.txt</license>
     <authorEmail>info@djumla.de</authorEmail>
     <authorUrl>www.djumla.de</authorUrl>
-    <version>3.0.0</version>
+    <version>4.0.0</version>
     <description>Flexforms form component</description>
+    <namespace path="src">Djumla\Component\Flexforms</namespace>
 
     <install> <!-- Runs on install -->
         <sql>
@@ -28,18 +29,12 @@
     </update>
 
     <files folder="site">
-        <filename>router.php</filename>
-        <filename>controller.php</filename>
-        <filename>flexforms.php</filename>
-        <filename>index.html</filename>
-        <folder>helpers</folder>
-        <folder>views</folder>
-        <folder>models</folder>
-        <folder>controllers</folder>
+        <folder>src</folder>
+        <folder>tmpl</folder>
     </files>
     <languages folder="site">
-        <language tag="de-DE">language/de-DE.com_flexforms.ini</language>
-        <language tag="en-GB">language/en-GB.com_flexforms.ini</language>
+        <language tag="de-DE">language/de-DE/com_flexforms.ini</language>
+        <language tag="en-GB">language/en-GB/com_flexforms.ini</language>
     </languages>
 
     <media destination="com_flexforms" folder="media">
@@ -49,23 +44,20 @@
     <administration>
         <menu>COM_FLEXFORMS_MENU</menu>
         <files folder="admin">
-            <filename>controller.php</filename>
-            <filename>flexforms.php</filename>
             <filename>config.xml</filename>
             <filename>access.xml</filename>
             <filename>index.html</filename>
             <folder>sql</folder>
-            <folder>models</folder>
-            <folder>controllers</folder>
-            <folder>views</folder>
-            <folder>helpers</folder>
-            <folder>tables</folder>
+            <folder>src</folder>
+            <folder>services</folder>
+            <folder>tmpl</folder>
+            <folder>forms</folder>
         </files>
         <languages folder="admin">
-            <language tag="de-DE">language/de-DE.com_flexforms.ini</language>
-            <language tag="de-DE">language/de-DE.com_flexforms.sys.ini</language>
-            <language tag="en-GB">language/en-GB.com_flexforms.ini</language>
-            <language tag="en-GB">language/en-GB.com_flexforms.sys.ini</language>
+            <language tag="de-DE">language/de-DE/com_flexforms.ini</language>
+            <language tag="de-DE">language/de-DE/com_flexforms.sys.ini</language>
+            <language tag="en-GB">language/en-GB/com_flexforms.ini</language>
+            <language tag="en-GB">language/en-GB/com_flexforms.sys.ini</language>
         </languages>
     </administration>
     <updateservers>
