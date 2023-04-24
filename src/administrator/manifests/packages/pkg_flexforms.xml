@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<extension type="package" version="3.8" method="upgrade">
+  <name>Flexforms Package</name>
+  <author>David Jardin</author>
+  <creationDate>%%CURRENTDATE%%</creationDate>
+  <copyright>(C) David Jardin - djumla. All rights reserved.</copyright>
+  <license>GNU General Public License version 3 or later; see LICENSE.txt</license>
+  <authorEmail>info@djumla.de</authorEmail>
+  <authorUrl>www.djumla.de</authorUrl>
+  <version>4.0.0</version>
+  <packagename>flexforms</packagename>
+  <url>http://www.djumla.io/</url>
+  <packager>David Jardin</packager>
+  <packagerurl>http://www.djumla.de</packagerurl>
+  <description>Flexforms Package</description>
+
+  <files>
+    <file type="plugin" group="system" id="flexforms">%%PLG_CONTENT_ZIPNAME%%</file>
+    <file type="plugin" group="content" id="flexforms">%%PLG_SYSTEM_ZIPNAME%%</file>
+    <file type="component" id="com_flexforms">%%COM_ZIPNAME%%</file>
+  </files>
+
+  <!-- Installation script -->
+  <scriptfile>script.flexforms.php</scriptfile>
+
+  <updateservers>
+    <server type="extension" priority="1" name="djumla extensions update server">http://extensions.djumla.de/component/ars/updates/components/flexforms?format=xml&amp;dummy=extension.xml</server>
+  </updateservers>
+</extension>

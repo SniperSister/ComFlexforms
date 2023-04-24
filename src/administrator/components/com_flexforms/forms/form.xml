@@ -106,7 +106,7 @@
     <field name="owner_attachments" type="list"
            class="inputbox"
            label="COM_FLEXFORMS_FORMS_FIELD_OWNER_ATTACHMENT"
-           showon="send_owner_mail:1[AND]owner_mail_type:0"
+           showon="send_owner_mail:1"
     >
       <option value="0">JNO</option>
       <option value="1">JYES</option>
@@ -161,7 +161,7 @@
     <field name="sender_attachments" type="list"
            class="inputbox"
            label="COM_FLEXFORMS_FORMS_FIELD_SENDER_ATTACHMENT"
-           showon="send_sender_mail:1[AND]sender_mail_type:0"
+           showon="send_sender_mail:1"
     >
       <option value="0">JNO</option>
       <option value="1">JYES</option>

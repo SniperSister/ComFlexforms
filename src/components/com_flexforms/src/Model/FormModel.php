@@ -10,6 +10,7 @@
 namespace Djumla\Component\Flexforms\Site\Model;
 
 use Djumla\Component\Flexforms\Site\Helper\LanguageHelper;
+use Djumla\Component\Flexforms\Site\Service\Mailing;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Language\Text;
@@ -91,7 +92,7 @@ class FormModel extends ItemModel
      *
      * @param   int  $id  form id
      *
-     * @return   mixed|object
+     * @return   Form
      *
      * @throws   \Exception
      */
@@ -158,7 +159,6 @@ class FormModel extends ItemModel
     public function submit($data, $files)
     {
         $item = $this->getItem();
-        $language = Factory::getLanguage();
 
         if (!$item->id) {
             throw new \Exception("Invalid form");
@@ -171,174 +171,22 @@ class FormModel extends ItemModel
 
         Factory::getApplication()->triggerEvent('onBeforeFlexformsSubmit', [&$item, &$form, &$data]);
 
+        $mailService = new Mailing($item, $form, $data, $files);
+
         // Prepare owner mail
         if ($item->send_owner_mail == 1) {
-            $ownerMail = Factory::getMailer();
-
-            // Check that the subject exists
-            if ($item->owner_subject == "") {
-                throw new \Exception("Missing owner mail subject");
-            }
-
-            // Check that the owner exists
-            if ($item->owner_mail == "") {
-                throw new \Exception("Missing owner mail text");
-            }
-
-            // Split owner array by comma
-            $owners = explode(",", $item->owners);
-
-            // Check and append recipients
-            foreach ($owners as $owner) {
-                if (!MailHelper::isEmailAddress($owner)) {
-                    throw new \Exception("Invalid owner addresses");
-                }
-            }
-
-            // Get mail body and subject and check if they are i18n strings
-            $ownerText = ($language->hasKey($item->owner_mail)) ? Text::_($item->owner_mail) : $item->owner_mail;
-            $ownerSubject = ($language->hasKey($item->owner_subject)) ? JText::_($item->owner_subject) : $item->owner_subject;
-
-            // Parse text
-            Factory::getApplication()->triggerEvent('onBeforeFlexformsParseOwnerEmailtext', [&$item, &$form, &$data, &$ownerText]);
-
-            $ownerText = $this->parseMailText($ownerText, $data, $form);
-            $ownerSubject = $this->parseMailText($ownerSubject, $data, $form);
-
-            Factory::getApplication()->triggerEvent('onAfterFlexformsParseOwnerEmailtext',[&$item, &$form, &$data, &$ownerText]);
-
-            // Attach uploaded files
-            if ($item->owner_attachments) {
-                $this->attachFiles($files, $ownerMail);
-            }
-
-            // Apply mail attributes
-            $ownerMail->addRecipient($owners);
-            $ownerMail->setSubject($ownerSubject);
-            $ownerMail->setBody($ownerText);
-            $ownerMail->isHtml(false);
+            $mailService->sendOwnerMail();;
         }
 
         // Prepare sender email
         if ($item->send_sender_mail == 1)
         {
-            $senderMail = Factory::getMailer();
-
-            // Check mail subject
-            if ($item->sender_subject == "") {
-                throw new \Exception("Missing owner mail subject");
-            }
-
-            // Check mail text
-            if ($item->sender_mail == "") {
-                throw new \Exception("Missing owner mail text");
-            }
-
-            // Check if the sender field name is correct
-            if (!$form->getField($item->sender_field)) {
-                throw new \Exception("Invalid sender field name");
-            }
-
-            // Check and append recipients
-            if (!MailHelper::isEmailAddress($data[$item->sender_field])) {
-                throw new \Exception("Invalid sender addresses");
-            }
-
-            // Get mail body and subject and check if they are i18n strings
-            $senderText = ($language->hasKey($item->sender_mail)) ? Text::_($item->sender_mail) : $item->sender_mail;
-            $senderSubject = ($language->hasKey($item->sender_subject)) ? Text::_($item->sender_subject) : $item->sender_subject;
-
-            // Parse text
-            Factory::getApplication()->triggerEvent('onBeforeFlexformsParseSenderEmailtext', [&$item, &$form, &$data, &$senderText]);
-
-            $senderText = $this->parseMailText($senderText, $data, $form);
-            $senderSubject = $this->parseMailText($senderSubject, $data, $form);
-
-            Factory::getApplication()->triggerEvent('onAfterFlexformsParseSenderEmailtext', [&$item, &$form, &$data, &$senderText]);
-
-            // Attach uploaded files
-            if ($item->sender_attachments) {
-                $this->attachFiles($files, $senderMail);
-            }
-
-            // Apply mail attributes
-            $senderMail->addRecipient($data[$item->sender_field]);
-            $senderMail->setSubject($senderSubject);
-            $senderMail->setBody($senderText);
-            $senderMail->isHtml(false);
-        }
-
-        // Everything seems to be fine, send mails
-        if (!empty($ownerMail)) {
-            Factory::getApplication()->triggerEvent('onBeforeFlexformsSendOwnerMail', [&$item, &$form, &$data, &$ownerMail]);
-            $ownerMail->Send();
-            Factory::getApplication()->triggerEvent('onAfterFlexformsSendOwnerMail', [&$item, &$form, &$data, &$ownerMail]);
-        }
-
-        if (!empty($senderMail)) {
-            Factory::getApplication()->triggerEvent('onBeforeFlexformsSendSenderMail', [&$item, &$form, &$data, &$senderMail]);
-            $senderMail->Send();
-            Factory::getApplication()->triggerEvent('onAfterFlexformsSendSenderMail', [&$item, &$form, &$data, &$senderMail]);
+            $mailService->sendSenderMail();
         }
 
         // Trigger "after submit" event
         Factory::getApplication()->triggerEvent('onAfterFlexformsSubmit', [&$item, &$form, &$data]);
 
         return true;
-    }
-
-    /**
-     * replaced placeholders in mail templates
-     *
-     * @param   string  $text  mail text
-     * @param   array   $data  user data
-     * @param   Form   $form  current form object
-     *
-     * @return  string  parsed text
-     */
-    protected function parseMailText($text, $data, $form)
-    {
-        foreach ($data as $fieldName => $fieldValue) {
-            $field = $form->getField($fieldName);
-
-            // Placeholder present and field valid?
-            if (!strpos($text, "{" . $fieldName . "}") || !$field) {
-                continue;
-            }
-
-            // Replace placeholder
-            if (is_array($fieldValue)) {
-                $text = str_ireplace("{" . $fieldName . "}", implode(", ", $fieldValue), $text);
-            } else {
-                $text = str_ireplace("{" . $fieldName . "}", $fieldValue, $text);
-            }
-        }
-
-        return $text;
-    }
-
-    /**
-     * Append uploaded files to sender or admin email
-     *
-     * @param   array  $files  array with uploaded files
-     * @param   Mail  &$mail  mail to send
-     *
-     * @return  void
-     */
-    protected function attachFiles(array $files, Mail &$mail)
-    {
-        Factory::getApplication()->triggerEvent('onBeforeFlexformsAddAttachments', [&$files]);
-
-        if (count($files)) {
-            foreach ($files as $file)
-            {
-                if (!$file['tmp_name'])
-                {
-                    continue;
-                }
-
-                $mail->addAttachment($file['tmp_name'], $file['name']);
-            }
-        }
     }
 }

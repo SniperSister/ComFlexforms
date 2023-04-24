@@ -60,8 +60,5 @@
             <language tag="en-GB">language/en-GB/com_flexforms.sys.ini</language>
         </languages>
     </administration>
-    <updateservers>
-        <server type="extension" priority="1" name="djumla extensions update server">http://extensions.djumla.de/component/ars/updates/components/flexforms?format=xml&amp;dummy=extension.xml</server>
-    </updateservers>
 </extension>
 
