@@ -12,7 +12,7 @@ namespace Djumla\Component\Flexforms\Site\Controller;
 // No direct access
 defined('_JEXEC') or die;
 
-use Djumla\Component\Flexforms\Administrator\Model\FormModel;
+use Djumla\Component\Flexforms\Site\Model\FormModel;
 use Djumla\Component\Flexforms\Site\Helper\LanguageHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
@@ -82,7 +82,7 @@ class FormController extends BaseController
             // An error occurred
             $this->setRedirect(
                 Route::_('index.php?option=com_flexforms&view=form&id=' . (int) $input->post->get('id'), false),
-                Text::_('COM_FLEXFORMS_FORM_SUBMIT_MSG_SEND_ERROR'),
+                Text::sprintf('COM_FLEXFORMS_FORM_SUBMIT_MSG_SEND_ERROR', $e->getMessage()),
                 'error'
             );
 

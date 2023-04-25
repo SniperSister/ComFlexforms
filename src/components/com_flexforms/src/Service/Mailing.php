@@ -60,13 +60,13 @@ class Mailing
             throw new \Exception("Invalid sender addresses");
         }
 
-        if ($this->item->owner_mail_type == "1") {
-            $this->sendOwnerMailTemplate();
+        if ($this->item->sender_mail_type == "1") {
+            $this->sendSenderMailTemplate();
 
             return;
         }
 
-        $this->sendOwnerMailManual();
+        $this->sendSenderMailManual();
     }
 
     protected function sendSenderMailManual()
@@ -148,13 +148,13 @@ class Mailing
         }
 
 
-        if ($this->item->sender_mail_type == "1") {
-            $this->sendSenderMailTemplate();
+        if ($this->item->owner_mail_type == "1") {
+            $this->sendOwnerMailTemplate();
 
             return;
         }
 
-        $this->sendSenderMailManual();
+        $this->sendOwnerMailManual();
     }
 
     protected function sendOwnerMailManual()
@@ -184,7 +184,7 @@ class Mailing
         }
 
         // Apply mail attributes
-        $ownerMail->addRecipient($owners);
+        $ownerMail->addRecipient(explode(",", $this->item->owners));
         $ownerMail->setSubject($ownerSubject);
         $ownerMail->setBody($ownerText);
         $ownerMail->isHtml(false);
