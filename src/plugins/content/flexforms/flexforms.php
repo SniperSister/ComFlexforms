@@ -62,7 +62,7 @@ class PlgContentFlexforms extends CMSPlugin
             return false;
         }
 
-        if (!$this->getApplication() instanceof SiteApplication) {
+        if (!Factory::getApplication() instanceof SiteApplication) {
             return true;
         }
 
@@ -71,7 +71,7 @@ class PlgContentFlexforms extends CMSPlugin
 
         foreach ($matches as $match) {
             /** @var \Djumla\Component\Flexforms\Site\Model\FormModel $model */
-            $model = $this->getApplication()->bootComponent('com_flexforms')
+            $model = Factory::getApplication()->bootComponent('com_flexforms')
                 ->getMVCFactory()
                 ->createModel('Form', 'Site');
 
@@ -94,7 +94,7 @@ class PlgContentFlexforms extends CMSPlugin
             // Enable js-based frontend validation
             if ($this->item->jsvalidation) {
                 /** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
-                $wa = \Joomla\CMS\Factory::getDocument()->getWebAssetManager();
+                $wa = Factory::getDocument()->getWebAssetManager();
                 $wa->useScript('keepalive')
                     ->useScript('form.validate');
             }
