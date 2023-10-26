@@ -28,5 +28,5 @@ defined('_JEXEC') or die();
     <input type="hidden" name="option" value="com_flexforms" />
     <input type="hidden" name="view" value="form" />
     <input type="hidden" name="id" value="<?php echo $this->item->id; ?>" />
-    <?php echo JHtml::_('form.token'); ?>
+    <?php echo \Joomla\CMS\HTML\HTMLHelper::_('form.token'); ?>
 </form>

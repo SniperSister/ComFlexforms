@@ -12,11 +12,9 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
-use Joomla\CMS\Language\Multilanguage;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Router\Route;
-use Joomla\CMS\Session\Session;
 
 /** @var \Djumla\Component\Flexforms\Administrator\View\Forms\HtmlView $this */
 
@@ -25,7 +23,7 @@ $wa = $this->document->getWebAssetManager();
 $wa->useScript('table.columns')
     ->useScript('multiselect');
 
-$user      = JFactory::getUser();
+$user      = Factory::getUser();
 $userId    = $user->get('id');
 $listOrder = $this->state->get('list.ordering');
 $listDirn  = $this->state->get('list.direction');
@@ -103,7 +101,7 @@ $sortFields = $this->getSortFields();
 
                 <input type="hidden" name="task" value=""/>
                 <input type="hidden" name="boxchecked" value="0"/>
-                <?php echo JHtml::_('form.token'); ?>
+                <?php echo HTMLHelper::_('form.token'); ?>
             </div>
         </div>
     </div>

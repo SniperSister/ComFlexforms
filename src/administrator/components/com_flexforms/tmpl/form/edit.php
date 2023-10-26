@@ -10,7 +10,8 @@
 // No direct access
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Layout\LayoutHelper;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Router\Route;
 
 /** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
 $wa = $this->document->getWebAssetManager();
@@ -19,7 +20,7 @@ $wa->useScript('keepalive')
 
 ?>
 <form
-    action="<?php echo JRoute::_('index.php?option=com_flexforms&layout=edit&id=' . (int) $this->item->id); ?>"
+    action="<?php echo Route::_('index.php?option=com_flexforms&layout=edit&id=' . (int) $this->item->id); ?>"
     method="post" enctype="multipart/form-data" name="adminForm" id="form-form" class="form-validate"
 >
     <div class="main-card">
@@ -55,7 +56,7 @@ $wa->useScript('keepalive')
         </div>
 
         <input type="hidden" name="task" value=""/>
-        <?php echo JHtml::_('form.token'); ?>
+        <?php echo HTMLHelper::_('form.token'); ?>
 
     </div>
 </form>
