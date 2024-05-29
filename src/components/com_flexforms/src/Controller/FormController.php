@@ -95,7 +95,13 @@ class FormController extends BaseController
         // Use provided URL for redirect to success page
         $successUrl = Route::_('index.php?option=com_flexforms&view=form&id=' . (int) $input->post->get('id'), false);
 
-        if (!empty($inputData['successUrl']) && Uri::isInternal(base64_decode($inputData['successUrl']))) {
+        if (
+            !empty($inputData['successUrl'])
+            && (
+                Uri::isInternal(base64_decode($inputData['successUrl']))
+                || trim(base64_decode($inputData['successUrl']))[0] === "/"
+            )
+        ) {
             $successUrl = base64_decode($inputData['successUrl']);
         }
 
