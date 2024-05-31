@@ -2,8 +2,7 @@
 
 FlexForms is a form extension built by developers, for developers. It:
 
-* is built for Joomla 3.x
-* is based on F0F (you need to install it, it's not the included FOF within the Joomla! Core)
+* is built for Joomla 4.x/5.x
 * uses JForm XML files for the form building and validation
 * has a per-form layout override system to allow individual styles
 * triggers the Joomla plugin system to allow special tasks when submitting a form
