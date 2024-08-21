@@ -44,7 +44,6 @@ class Mailing
 
     public function sendSenderMail()
     {
-
         // Check mail subject
         if ($this->item->sender_subject == "") {
             throw new \Exception("Missing sender mail subject");
@@ -115,13 +114,17 @@ class Mailing
             throw new \Exception("Missing sender mail template");
         }
 
+        // Allow override of mailtemplate id
+        $templateId = $this->item->sender_mail_template;
+        Factory::getApplication()->triggerEvent('onFlexformsProcessSenderMailtemplateId', [&$this->item, &$this->form, &$this->data, &$templateId]);
+
         // Prepare email and try to send it
-        $senderMail = new MailTemplate($this->item->sender_mail_template, $this->language->getTag());
+        $senderMail = new MailTemplate($templateId, $this->language->getTag());
         $senderMail->addTemplateData($this->data);
         $senderMail->addRecipient($this->data[$this->item->sender_field]);
 
         // Attach uploaded files
-        if ($this->item->owner_attachments) {
+        if ($this->item->sender_attachments) {
             $this->attachFilesToMail($senderMail);
         }
 
@@ -204,8 +207,12 @@ class Mailing
             throw new \Exception("Missing owner mail template");
         }
 
+        // Allow override of mailtemplate id
+        $templateId = $this->item->owner_mail_template;
+        Factory::getApplication()->triggerEvent('onFlexformsProcessOwnerMailtemplateId', [&$this->item, &$this->form, &$this->data, &$templateId]);
+
         // Prepare email and try to send it
-        $ownerMail = new MailTemplate($this->item->owner_mail_template, $this->language->getTag());
+        $ownerMail = new MailTemplate($templateId, $this->language->getTag());
         $ownerMail->addTemplateData($this->data);
 
         // Add owner

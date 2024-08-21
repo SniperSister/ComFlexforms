@@ -119,6 +119,8 @@ class FormController extends BaseController
             $successMessage = Text::_($item->custommessage);
         }
 
+        Factory::getApplication()->triggerEvent('onBeforeFlexformsSetSuccessMessage', [$item, $model->getFormDefinition(), $inputData, &$successMessage]);
+
         // Everything went fine, return
         $this->setRedirect(
             $successUrl,
