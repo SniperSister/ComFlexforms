@@ -7,8 +7,11 @@
  * @link       http://www.djumla.de
  */
 
+namespace Djumla\Plugin\Content\Flexforms\Extension;
+
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Event\Content\ContentPrepareEvent;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Plugin\PluginHelper;
@@ -16,30 +19,25 @@ use Joomla\CMS\Plugin\CMSPlugin;
 use Djumla\Component\Flexforms\Site\Helper\LanguageHelper;
 use Djumla\Component\Flexforms\Site\Helper\LayoutHelper;
 use Joomla\CMS\Application\SiteApplication;
+use Joomla\Event\SubscriberInterface;
 
 /**
  * Class PlgContentFlexforms
  *
  * @since  1.0.0
  */
-class PlgContentFlexforms extends CMSPlugin
+class Flexforms extends CMSPlugin implements SubscriberInterface
 {
-    /**
-     * Plugin that loads a form within content
-     *
-     * @param   string   $context   The context of the content being passed to the plugin.
-     * @param   object   &$article  The article object.  Note $article->text is also available
-     * @param   mixed    &$params   The article params
-     * @param   integer  $page      The 'page' number
-     *
-     * @return  mixed   true if there is an error. Void otherwise.
-     *
-     * @throws  Exception
-     *
-     * @since   1.6
-     */
-    public function onContentPrepare($context, &$article, &$params, $page = 0)
+    public static function getSubscribedEvents(): array
     {
+        return ['onContentPrepare' => 'onContentPrepare'];
+    }
+
+    public function onContentPrepare(ContentPrepareEvent $event)
+    {
+        $context = $event->getContext();
+        $article = $event->getItem();
+
         // Don't run this plugin when the content is being indexed
         if ($context === 'com_finder.indexer') {
             $article->text = preg_replace('/{flexform (\\d*)}/', '', $article->text);

@@ -7,6 +7,8 @@
  * @link       http://www.djumla.de
  */
 
+namespace Djumla\Plugin\System\Flexforms\Extension;
+
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Router\Route;
@@ -16,20 +18,19 @@ use Joomla\CMS\Plugin\CMSPlugin;
 use Djumla\Component\Flexforms\Site\Helper\LanguageHelper;
 use Djumla\Component\Flexforms\Site\Helper\LayoutHelper;
 use Joomla\CMS\Application\SiteApplication;
+use Joomla\Event\SubscriberInterface;
 
 /**
  * Class PlgSystemFlexforms
  *
  * @since  1.0.0
  */
-class PlgSystemFlexforms extends CMSPlugin
+class Flexforms extends CMSPlugin implements SubscriberInterface
 {
-    /**
-     * @var    \Joomla\CMS\Application\CMSApplication
-     *
-     * @since  3.2
-     */
-    protected $app;
+    public static function getSubscribedEvents(): array
+    {
+        return ['onAfterRoute' => 'onAfterRoute'];
+    }
 
     /**
      * Remember me method to run onAfterInitialise

@@ -7,7 +7,7 @@
     <license>GNU General Public License version 3 or later; see LICENSE.txt</license>
     <authorEmail>info@djumla.de</authorEmail>
     <authorUrl>www.djumla.de</authorUrl>
-    <version>4.0.0</version>
+    <version>4.1.0</version>
     <description>Flexforms form component</description>
     <namespace path="src">Djumla\Component\Flexforms</namespace>
 

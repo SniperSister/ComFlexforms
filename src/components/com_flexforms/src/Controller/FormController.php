@@ -12,6 +12,7 @@ namespace Djumla\Component\Flexforms\Site\Controller;
 // No direct access
 defined('_JEXEC') or die;
 
+use Djumla\Component\Flexforms\Site\Event\SuccessMessageEvent;
 use Djumla\Component\Flexforms\Site\Model\FormModel;
 use Djumla\Component\Flexforms\Site\Helper\LanguageHelper;
 use Joomla\CMS\Factory;
@@ -119,7 +120,21 @@ class FormController extends BaseController
             $successMessage = Text::_($item->custommessage);
         }
 
-        Factory::getApplication()->triggerEvent('onBeforeFlexformsSetSuccessMessage', [$item, $model->getFormDefinition(), $inputData, &$successMessage]);
+        // Allow post-processing in plugin
+        $eventResult = Factory::getApplication()->getDispatcher()->dispatch(
+            'onBeforeFlexformsSetSuccessMessage',
+            new SuccessMessageEvent(
+                'onBeforeFlexformsSetSuccessMessage',
+                [
+                    'form' => $this->item,
+                    'jform' => $this->form,
+                    'data' => $data,
+                    'successMessage' => $successMessage
+                ]
+            )
+        );
+
+        $successMessage = $eventResult->getArgument('successMessage');
 
         // Everything went fine, return
         $this->setRedirect(

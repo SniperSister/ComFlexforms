@@ -9,6 +9,11 @@
 
 namespace Djumla\Component\Flexforms\Site\Service;
 
+use Djumla\Component\Flexforms\Site\Event\DataAwareEvent;
+use Djumla\Component\Flexforms\Site\Event\MailEvent;
+use Djumla\Component\Flexforms\Site\Event\MailTemplateEvent;
+use Djumla\Component\Flexforms\Site\Event\MailTextEvent;
+use Djumla\Component\Flexforms\Site\Event\SuccessMessageEvent;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Language\Text;
@@ -71,6 +76,7 @@ class Mailing
     protected function sendSenderMailManual()
     {
         $senderMail = Factory::getMailer();
+        $dispatcher = Factory::getApplication()->getDispatcher();
 
         // Check mail text
         if ($this->item->sender_mail == "") {
@@ -81,13 +87,41 @@ class Mailing
         $senderText = ($this->language->hasKey($this->item->sender_mail)) ? Text::_($this->item->sender_mail) : $this->item->sender_mail;
         $senderSubject = ($this->language->hasKey($this->item->sender_subject)) ? Text::_($this->item->sender_subject) : $this->item->sender_subject;
 
-        // Parse text
-        Factory::getApplication()->triggerEvent('onBeforeFlexformsParseSenderEmailtext', [&$this->item, &$this->form, &$this->data, &$senderText]);
+        // Allow pre-processing in plugin
+        $eventResult = $dispatcher->dispatch(
+            'onBeforeFlexformsParseSenderEmailtext',
+            new MailTextEvent(
+                'onBeforeFlexformsParseSenderEmailtext',
+                [
+                    'form' => $this->item,
+                    'jform' => $this->form,
+                    'data' => $this->data,
+                    'text' => $senderText
+                ]
+            )
+        );
 
+        $senderText = $eventResult->getArgument('text');
+
+        // Parse text
         $senderText = $this->parseMailText($senderText);
         $senderSubject = $this->parseMailText($senderSubject);
 
-        Factory::getApplication()->triggerEvent('onAfterFlexformsParseSenderEmailtext', [&$this->item, &$this->form, &$this->data, &$senderText]);
+        // Allow pre-processing in plugin
+        $eventResult = $dispatcher->dispatch(
+            'onAfterFlexformsParseSenderEmailtext',
+            new MailTextEvent(
+                'onAfterFlexformsParseSenderEmailtext',
+                [
+                    'form' => $this->item,
+                    'jform' => $this->form,
+                    'data' => $this->data,
+                    'text' => $senderText
+                ]
+            )
+        );
+
+        $senderText = $eventResult->getArgument('text');
 
         // Attach uploaded files
         if ($this->item->sender_attachments) {
@@ -101,25 +135,60 @@ class Mailing
         $senderMail->isHtml(false);
 
         if (!empty($senderMail)) {
-            Factory::getApplication()->triggerEvent('onBeforeFlexformsSendSenderMail', [&$this->item, &$this->form, &$this->data, &$senderMail]);
+            $dispatcher->dispatch(
+                'onBeforeFlexformsSendSenderMail',
+                new MailEvent(
+                    'onBeforeFlexformsSendSenderMail',
+                    [
+                        'form' => $this->item,
+                        'jform' => $this->form,
+                        'data' => $this->data,
+                        'mail' => $senderMail
+                    ]
+                )
+            );
+
             $senderMail->Send();
-            Factory::getApplication()->triggerEvent('onAfterFlexformsSendSenderMail', [&$this->item, &$this->form, &$this->data, &$senderMail]);
+
+            $dispatcher->dispatch(
+                'onAfterFlexformsSendSenderMail',
+                new MailEvent(
+                    'onAfterFlexformsSendSenderMail',
+                    [
+                        'form' => $this->item,
+                        'jform' => $this->form,
+                        'data' => $this->data,
+                        'mail' => $senderMail
+                    ]
+                )
+            );
         }
     }
 
     protected function sendSenderMailTemplate()
     {
+        $dispatcher = Factory::getApplication()->getDispatcher();
+
         // Check mail text
         if ($this->item->sender_mail_template == "") {
             throw new \Exception("Missing sender mail template");
         }
 
         // Allow override of mailtemplate id
-        $templateId = $this->item->sender_mail_template;
-        Factory::getApplication()->triggerEvent('onFlexformsProcessSenderMailtemplateId', [&$this->item, &$this->form, &$this->data, &$templateId]);
+        $dispatcher->dispatch(
+            'onFlexformsProcessSenderMailtemplateId',
+            new DataAwareEvent(
+                'onFlexformsProcessSenderMailtemplateId',
+                [
+                    'form' => $this->item,
+                    'jform' => $this->form,
+                    'data' => $this->data
+                ]
+            )
+        );
 
         // Prepare email and try to send it
-        $senderMail = new MailTemplate($templateId, $this->language->getTag());
+        $senderMail = new MailTemplate($this->item->sender_mail_template, $this->language->getTag());
         $senderMail->addTemplateData($this->data);
         $senderMail->addRecipient($this->data[$this->item->sender_field]);
 
@@ -128,13 +197,39 @@ class Mailing
             $this->attachFilesToMail($senderMail);
         }
 
-        Factory::getApplication()->triggerEvent('onBeforeFlexformsSendSenderMailTemplate', [&$this->item, &$this->form, &$this->data, &$senderMail]);
+        $dispatcher->dispatch(
+            'onBeforeFlexformsSendSenderMailTemplate',
+            new MailTemplateEvent(
+                'onBeforeFlexformsSendSenderMailTemplate',
+                [
+                    'form' => $this->item,
+                    'jform' => $this->form,
+                    'data' => $this->data,
+                    'mail' => $senderMail
+                ]
+            )
+        );
+
         $senderMail->send();
-        Factory::getApplication()->triggerEvent('onAfterFlexformsSendSenderMailTemplate', [&$this->item, &$this->form, &$this->data, &$senderMail]);
+
+        $dispatcher->dispatch(
+            'onAfterFlexformsSendSenderMailTemplate',
+            new MailTemplateEvent(
+                'onAfterFlexformsSendSenderMailTemplate',
+                [
+                    'form' => $this->item,
+                    'jform' => $this->form,
+                    'data' => $this->data,
+                    'mail' => $senderMail
+                ]
+            )
+        );
     }
 
     public function sendOwnerMail()
     {
+        $dispatcher = Factory::getApplication()->getDispatcher();
+
         // Check that the subject exists
         if ($this->item->owner_subject == "") {
             throw new \Exception("Missing owner mail subject");
@@ -163,6 +258,7 @@ class Mailing
     protected function sendOwnerMailManual()
     {
         $ownerMail = Factory::getMailer();
+        $dispatcher = Factory::getApplication()->getDispatcher();
 
         // Check that the owner exists
         if ($this->item->owner_mail == "") {
@@ -173,13 +269,40 @@ class Mailing
         $ownerText = ($this->language->hasKey($this->item->owner_mail)) ? Text::_($this->item->owner_mail) : $this->item->owner_mail;
         $ownerSubject = ($this->language->hasKey($this->item->owner_subject)) ? Text::_($this->item->owner_subject) : $this->item->owner_subject;
 
-        // Parse text
-        Factory::getApplication()->triggerEvent('onBeforeFlexformsParseOwnerEmailtext', [&$this->item, &$this->form, &$this->data, &$ownerText]);
+        // Allow pre-processing in plugin
+        $eventResult = $dispatcher->dispatch(
+            'onBeforeFlexformsParseOwnerEmailtext',
+            new MailTextEvent(
+                'onBeforeFlexformsParseOwnerEmailtext',
+                [
+                    'form' => $this->item,
+                    'jform' => $this->form,
+                    'data' => $this->data,
+                    'text' => $ownerText
+                ]
+            )
+        );
 
+        $ownerText = $eventResult->getArgument('text');
+
+        // Parse text
         $ownerText = $this->parseMailText($ownerText);
         $ownerSubject = $this->parseMailText($ownerSubject);
 
-        Factory::getApplication()->triggerEvent('onAfterFlexformsParseOwnerEmailtext',[&$this->item, &$this->form, &$this->data, &$ownerText]);
+        $eventResult = $dispatcher->dispatch(
+            'onAfterFlexformsParseOwnerEmailtext',
+            new MailTextEvent(
+                'onAfterFlexformsParseOwnerEmailtext',
+                [
+                    'form' => $this->item,
+                    'jform' => $this->form,
+                    'data' => $this->data,
+                    'text' => $ownerText
+                ]
+            )
+        );
+
+        $ownerText = $eventResult->getArgument('text');
 
         // Attach uploaded files
         if ($this->item->owner_attachments) {
@@ -194,25 +317,61 @@ class Mailing
 
         // Everything seems to be fine, send mails
         if (!empty($ownerMail)) {
-            Factory::getApplication()->triggerEvent('onBeforeFlexformsSendOwnerMail', [&$this->item, &$this->form, &$this->data, &$ownerMail]);
+            $dispatcher->dispatch(
+                'onBeforeFlexformsSendOwnerMail',
+                new MailEvent(
+                    'onBeforeFlexformsSendOwnerMail',
+                    [
+                        'form' => $this->item,
+                        'jform' => $this->form,
+                        'data' => $this->data,
+                        'mail' => $ownerMail
+                    ]
+                )
+            );
+
             $ownerMail->Send();
-            Factory::getApplication()->triggerEvent('onAfterFlexformsSendOwnerMail', [&$this->item, &$this->form, &$this->data, &$ownerMail]);
+
+            $dispatcher->dispatch(
+                'onAfterFlexformsSendOwnerMail',
+                new MailEvent(
+                    'onAfterFlexformsSendOwnerMail',
+                    [
+                        'form' => $this->item,
+                        'jform' => $this->form,
+                        'data' => $this->data,
+                        'mail' => $ownerMail
+                    ]
+                )
+            );
         }
     }
 
     protected function sendOwnerMailTemplate()
     {
+        $dispatcher = Factory::getApplication()->getDispatcher();
+
         // Check mail template
         if ($this->item->owner_mail_template == "") {
             throw new \Exception("Missing owner mail template");
         }
 
         // Allow override of mailtemplate id
-        $templateId = $this->item->owner_mail_template;
-        Factory::getApplication()->triggerEvent('onFlexformsProcessOwnerMailtemplateId', [&$this->item, &$this->form, &$this->data, &$templateId]);
+        $dispatcher->dispatch(
+            'onFlexformsProcessOwnerMailtemplateId',
+            new DataAwareEvent(
+                'onFlexformsProcessOwnerMailtemplateId',
+                [
+                    'form' => $this->item,
+                    'jform' => $this->form,
+                    'data' => $this->data
+                ]
+            )
+        );
+
 
         // Prepare email and try to send it
-        $ownerMail = new MailTemplate($templateId, $this->language->getTag());
+        $ownerMail = new MailTemplate($this->item->owner_mail_template, $this->language->getTag());
         $ownerMail->addTemplateData($this->data);
 
         // Add owner
@@ -225,15 +384,37 @@ class Mailing
             $this->attachFilesToMail($ownerMail);
         }
 
-        Factory::getApplication()->triggerEvent('onBeforeFlexformsSendSenderMailTemplate', [&$this->item, &$this->form, &$this->data, &$ownerMail]);
+        $dispatcher->dispatch(
+            'onBeforeFlexformsSendSenderMailTemplate',
+            new MailTemplateEvent(
+                'onBeforeFlexformsSendSenderMailTemplate',
+                [
+                    'form' => $this->item,
+                    'jform' => $this->form,
+                    'data' => $this->data,
+                    'mail' => $ownerMail
+                ]
+            )
+        );
+
         $ownerMail->send();
-        Factory::getApplication()->triggerEvent('onAfterFlexformsSendSenderMailTemplate', [&$this->item, &$this->form, &$this->data, &$ownerMail]);
+
+        $dispatcher->dispatch(
+            'onAfterFlexformsSendSenderMailTemplate',
+            new MailTemplateEvent(
+                'onAfterFlexformsSendSenderMailTemplate',
+                [
+                    'form' => $this->item,
+                    'jform' => $this->form,
+                    'data' => $this->data,
+                    'mail' => $ownerMail
+                ]
+            )
+        );
     }
 
     protected function attachFilesToMail($mail)
     {
-        Factory::getApplication()->triggerEvent('onBeforeFlexformsAddAttachments', [&$this->files]);
-
         if (count($this->files)) {
             foreach ($this->files as $file)
             {

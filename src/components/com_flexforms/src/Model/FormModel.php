@@ -9,6 +9,9 @@
 
 namespace Djumla\Component\Flexforms\Site\Model;
 
+use Djumla\Component\Flexforms\Site\Event\SuccessMessageEvent;
+use Djumla\Component\Flexforms\Site\Event\DataAwareEvent;
+use Djumla\Component\Flexforms\Site\Event\FlexformEvent;
 use Djumla\Component\Flexforms\Site\Helper\LanguageHelper;
 use Djumla\Component\Flexforms\Site\Service\Mailing;
 use Joomla\CMS\Factory;
@@ -108,7 +111,16 @@ class FormModel extends ItemModel
             throw new \Exception("Invalid form returned");
         }
 
-        Factory::getApplication()->triggerEvent('onBeforeFlexformsReturnForm', [&$form, &$item]);
+        Factory::getApplication()->getDispatcher()->dispatch(
+            'onBeforeFlexformsReturnForm',
+            new FlexformEvent(
+                'onBeforeFlexformsReturnForm',
+                [
+                    'form' => $item,
+                    'jform' => $form
+                ]
+            )
+        );
 
         return $form;
     }
@@ -132,11 +144,31 @@ class FormModel extends ItemModel
 
         $form = $this->getFormDefinition();
 
-        Factory::getApplication()->triggerEvent('onBeforeFlexformsValidate', [&$item, &$form, &$data]);
+        Factory::getApplication()->getDispatcher()->dispatch(
+            'onBeforeFlexformsValidate',
+            new DataAwareEvent(
+                'onBeforeFlexformsValidate',
+                [
+                    'form' => $item,
+                    'jform' => $form,
+                    'data' => $data
+                ]
+            )
+        );
 
         $result = $form->validate($data);
 
-        Factory::getApplication()->triggerEvent('onAfterFlexformsValidate', [&$item, &$form, &$data, &$result]);
+        Factory::getApplication()->getDispatcher()->dispatch(
+            'onAfterFlexformsValidate',
+            new DataAwareEvent(
+                'onAfterFlexformsValidate',
+                [
+                    'form' => $item,
+                    'jform' => $form,
+                    'data' => $data
+                ]
+            )
+        );
 
         // Append error messages
         if (! $result) {
@@ -169,7 +201,17 @@ class FormModel extends ItemModel
 
         $form = $this->getFormDefinition();
 
-        Factory::getApplication()->triggerEvent('onBeforeFlexformsSubmit', [&$item, &$form, &$data]);
+        Factory::getApplication()->getDispatcher()->dispatch(
+            'onBeforeFlexformsSubmit',
+            new DataAwareEvent(
+                'onBeforeFlexformsSubmit',
+                [
+                    'form' => $item,
+                    'jform' => $form,
+                    'data' => $data
+                ]
+            )
+        );
 
         $mailService = new Mailing($item, $form, $data, $files);
 
@@ -185,7 +227,17 @@ class FormModel extends ItemModel
         }
 
         // Trigger "after submit" event
-        Factory::getApplication()->triggerEvent('onAfterFlexformsSubmit', [&$item, &$form, &$data]);
+        Factory::getApplication()->getDispatcher()->dispatch(
+            'onAfterFlexformsSubmit',
+            new DataAwareEvent(
+                'onAfterFlexformsSubmit',
+                [
+                    'form' => $item,
+                    'jform' => $form,
+                    'data' => $data
+                ]
+            )
+        );
 
         return true;
     }
