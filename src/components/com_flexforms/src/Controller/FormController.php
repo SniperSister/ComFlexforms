@@ -126,8 +126,8 @@ class FormController extends BaseController
             new SuccessMessageEvent(
                 'onBeforeFlexformsSetSuccessMessage',
                 [
-                    'form' => $this->item,
-                    'jform' => $this->form,
+                    'form' => $item,
+                    'jform' => $model->getFormDefinition(),
                     'data' => $data,
                     'successMessage' => $successMessage
                 ]
