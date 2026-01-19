@@ -45,11 +45,11 @@ class Flexforms extends CMSPlugin implements SubscriberInterface
     public function onAfterRoute()
     {
         // No remember me for admin.
-        if (!$this->app->isClient('administrator')) {
+        if (!Factory::getApplication()->isClient('administrator')) {
             return;
         }
 
-        if ($this->app->getInput()->get('option') !== 'com_mails') {
+        if (Factory::getApplication()->getInput()->get('option') !== 'com_mails') {
             return;
         }
 

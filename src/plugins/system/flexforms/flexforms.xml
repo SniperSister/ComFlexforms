@@ -7,12 +7,12 @@
     <license>GNU General Public License version 3 or later; see LICENSE.txt</license>
     <authorEmail>info@djumla.de</authorEmail>
     <authorUrl>www.djumla.de</authorUrl>
-    <version>4.1.0</version>
+    <version>4.1.2</version>
     <description>Flexforms System Plugin</description>
     <namespace path="src">Djumla\Plugin\System\Flexforms</namespace>
     <files>
-        <file plugin="flexforms">flexforms.php</file>
-        <filename>index.html</filename>
+        <folder plugin="flexforms">services</folder>
+        <folder>src</folder>
     </files>
     <languages>
         <language tag="de-DE">language/de-DE/plg_system_flexforms.ini</language>

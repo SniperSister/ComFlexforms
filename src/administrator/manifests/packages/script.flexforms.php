@@ -34,7 +34,7 @@ class Pkg_FlexformsInstallerScript
      *
      * @var   string
      */
-    protected $maximumJoomlaVersion = '4.9.999';
+    protected $maximumJoomlaVersion = '6.9.999';
 
 
     /**
